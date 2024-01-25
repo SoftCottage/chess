@@ -76,7 +76,7 @@ public class ChessPiece {
             case KNIGHT:
                 return null;
             case ROOK:
-                return null;
+                return new RookMoves().pieceMoves(board, myPosition);
             case PAWN:
                 return null;
             default:

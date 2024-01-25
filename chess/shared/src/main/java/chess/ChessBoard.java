@@ -9,7 +9,7 @@ import java.util.Arrays;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private ChessPiece[][] squares = new ChessPiece[8][8];
+    private ChessPiece[][] board = new ChessPiece[8][8];
 
     public ChessBoard() {
 
@@ -22,7 +22,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        squares[position.getRow()-1][position.getColumn()-1] = piece;
+        board[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -33,7 +33,11 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow()-1][position.getColumn()-1];
+        return board[position.getRow()-1][position.getColumn()-1];
+    }
+
+    public boolean inBounds(int row, int col) {
+        return row >= 1 && row <= 8 && col >= 1 && col <= 8;
     }
 
     /**
@@ -48,11 +52,11 @@ public class ChessBoard {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ChessBoard that)) return false;
-        return Arrays.deepEquals(squares, that.squares);
+        return Arrays.deepEquals(board, that.board);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(squares);
+        return Arrays.deepHashCode(board);
     }
 }
