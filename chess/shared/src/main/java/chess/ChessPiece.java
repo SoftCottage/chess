@@ -66,21 +66,13 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece.PieceType type = board.getPiece(myPosition).getPieceType();
-        switch(type) {
-            case KING:
-                return null;
-            case QUEEN:
-                return null;
-            case BISHOP:
-                return null;
-            case KNIGHT:
-                return null;
-            case ROOK:
-                return new RookMoves().pieceMoves(board, myPosition);
-            case PAWN:
-                return null;
-            default:
-                return null;
-        }
+        return switch (type) {
+            case KING -> null;
+            case QUEEN -> null;
+            case BISHOP -> new BishopMoves().pieceMoves(board, myPosition);
+            case KNIGHT -> null;
+            case ROOK -> new RookMoves().pieceMoves(board, myPosition);
+            case PAWN -> null;
+        };
     }
 }

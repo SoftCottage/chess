@@ -2,8 +2,10 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-public class RookMoves {
-    private final Collection<ChessMove> moves = new ArrayList<>();
+public class BishopMoves {
+
+    private final ArrayList<ChessMove> moves = new ArrayList<>();
+
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         ChessPiece piece = board.getPiece(position);
         int row = position.getRow();
@@ -11,14 +13,17 @@ public class RookMoves {
         checkMoves(board, position, piece, row, col);
         return moves;
     }
+
     public void checkMoves(ChessBoard board, ChessPosition position, ChessPiece piece, int row, int col) {
-        //Up
+        //UpRight
         int i = row + 1;
-        while (board.inBounds(i, col)) {
-            ChessPosition next = new ChessPosition(i, col);
+        int j = col + 1;
+        while (board.inBounds(i, j)) {
+            ChessPosition next = new ChessPosition(i, j);
             if  (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
                 i++;
+                j++;
             }
             else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));
@@ -28,29 +33,15 @@ public class RookMoves {
                 break;
             }
         }
-        //Down
-        int j = row - 1;
-        while (board.inBounds(j, col)) {
-            ChessPosition next = new ChessPosition(j, col);
-            if  (board.getPiece(next) == null) {
-                moves.add(new ChessMove(position, next, null));
-                j--;
-            }
-            else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
-                moves.add(new ChessMove(position, next, null));
-                break;
-            }
-            else if (board.getPiece(next).getTeamColor() == piece.getTeamColor()) {
-                break;
-            }
-        }
-        //Right
-        int k = col + 1;
-        while (board.inBounds(row, k)) {
-            ChessPosition next = new ChessPosition(row, k);
+        //UpLeft
+        int k = row + 1;
+        int l = col - 1;
+        while (board.inBounds(k, l)) {
+            ChessPosition next = new ChessPosition(k, l);
             if  (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
                 k++;
+                l--;
             }
             else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));
@@ -60,13 +51,33 @@ public class RookMoves {
                 break;
             }
         }
-        //Left
-        int l = col - 1;
-        while (board.inBounds(row, l)) {
-            ChessPosition next = new ChessPosition(row, l);
+        //DownRight
+        int m = row - 1;
+        int n = col + 1;
+        while (board.inBounds(m, n)) {
+            ChessPosition next = new ChessPosition(m, n);
             if  (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
-                l--;
+                m--;
+                n++;
+            }
+            else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
+                moves.add(new ChessMove(position, next, null));
+                break;
+            }
+            else if (board.getPiece(next).getTeamColor() == piece.getTeamColor()) {
+                break;
+            }
+        }
+        //UpRight
+        int o = row - 1;
+        int p = col - 1;
+        while (board.inBounds(o, p)) {
+            ChessPosition next = new ChessPosition(o, p);
+            if  (board.getPiece(next) == null) {
+                moves.add(new ChessMove(position, next, null));
+                o--;
+                p--;
             }
             else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));
@@ -78,4 +89,3 @@ public class RookMoves {
         }
     }
 }
-
