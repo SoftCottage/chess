@@ -13,12 +13,12 @@ public class RookMoves {
     }
     public void checkMoves(ChessBoard board, ChessPosition position, ChessPiece piece, int row, int col) {
         //Up
-        int i = row + 1;
-        while (board.inBounds(i, col)) {
-            ChessPosition next = new ChessPosition(i, col);
+        int a = row + 1;
+        while (board.inBounds(a, col)) {
+            ChessPosition next = new ChessPosition(a, col);
             if  (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
-                i++;
+                a++;
             }
             else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));
@@ -29,12 +29,12 @@ public class RookMoves {
             }
         }
         //Down
-        int j = row - 1;
-        while (board.inBounds(j, col)) {
-            ChessPosition next = new ChessPosition(j, col);
+        int b = row - 1;
+        while (board.inBounds(b, col)) {
+            ChessPosition next = new ChessPosition(b, col);
             if  (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
-                j--;
+                b--;
             }
             else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));
@@ -45,12 +45,12 @@ public class RookMoves {
             }
         }
         //Right
-        int k = col + 1;
-        while (board.inBounds(row, k)) {
-            ChessPosition next = new ChessPosition(row, k);
+        int c = col + 1;
+        while (board.inBounds(row, c)) {
+            ChessPosition next = new ChessPosition(row, c);
             if  (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
-                k++;
+                c++;
             }
             else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));
@@ -61,12 +61,12 @@ public class RookMoves {
             }
         }
         //Left
-        int l = col - 1;
-        while (board.inBounds(row, l)) {
-            ChessPosition next = new ChessPosition(row, l);
+        int d = col - 1;
+        while (board.inBounds(row, d)) {
+            ChessPosition next = new ChessPosition(row, d);
             if  (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
-                l--;
+                d--;
             }
             else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));

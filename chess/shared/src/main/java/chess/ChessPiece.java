@@ -68,7 +68,7 @@ public class ChessPiece {
         ChessPiece.PieceType type = board.getPiece(myPosition).getPieceType();
         return switch (type) {
             case KING -> null;
-            case QUEEN -> null;
+            case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);
             case BISHOP -> new BishopMoves().pieceMoves(board, myPosition);
             case KNIGHT -> null;
             case ROOK -> new RookMoves().pieceMoves(board, myPosition);
