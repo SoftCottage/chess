@@ -70,7 +70,7 @@ public class ChessPiece {
             case KING -> null;
             case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);
             case BISHOP -> new BishopMoves().pieceMoves(board, myPosition);
-            case KNIGHT -> null;
+            case KNIGHT -> new KnightMoves().pieceMoves(board,myPosition);
             case ROOK -> new RookMoves().pieceMoves(board, myPosition);
             case PAWN -> null;
         };
