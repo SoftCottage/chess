@@ -3,8 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.Collection;
 public class KnightMoves {
-
-    private final Collection<ChessMove> moves = new ArrayList<>();
+    private final ArrayList<ChessMove> moves = new ArrayList<>();
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition position) {
         ChessPiece piece = board.getPiece(position);
         int row = position.getRow();
@@ -19,7 +18,6 @@ public class KnightMoves {
         checkMoves(board, position, piece, row, col, -1, -2);
         return moves;
     }
-
     public void checkMoves(ChessBoard board, ChessPosition position, ChessPiece piece, int row, int col, int rowMove, int colMove) {
         int a = row + rowMove;
         int b = col + colMove;
