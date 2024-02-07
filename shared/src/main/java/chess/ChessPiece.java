@@ -65,7 +65,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ChessPiece.PieceType type = board.getPiece(myPosition).getPieceType();
+        ChessPiece.PieceType type = getPieceType();
         return switch (type) {
             case KING -> new KingMoves().pieceMoves(board, myPosition);
             case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);

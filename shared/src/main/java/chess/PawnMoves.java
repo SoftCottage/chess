@@ -37,7 +37,7 @@ public class PawnMoves {
             for (int i = -1; i <= 1; i = i + 2) {
                 next = new ChessPosition(row + 1, col + i);
                 if (board.inBounds(row + 1, col + i)) {
-                    if (board.getPiece(next) != null && board.getPiece(next).getTeamColor() == ChessGame.TeamColor.BLACK) {
+                    if (board.getPiece(next) != null && board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                         if (next.getRow() == 8) {
                             Promote(position, next);
                         } else {

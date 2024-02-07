@@ -19,10 +19,10 @@ public class KnightMoves {
         return moves;
     }
     public void checkMoves(ChessBoard board, ChessPosition position, ChessPiece piece, int row, int col, int rowMove, int colMove) {
-        int a = row + rowMove;
-        int b = col + colMove;
-        ChessPosition next = new ChessPosition(a, b);
-        if (board.inBounds(a, b)) {
+        int i = row + rowMove;
+        int j = col + colMove;
+        ChessPosition next = new ChessPosition(i, j);
+        if (board.inBounds(i, j)) {
             if (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
             } else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {

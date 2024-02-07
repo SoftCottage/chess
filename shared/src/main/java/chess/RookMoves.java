@@ -16,15 +16,14 @@ public class RookMoves {
         return moves;
     }
     public void checkMoves(ChessBoard board, ChessPosition position, ChessPiece piece, int row, int col, int rowMove, int colMove) {
-        //UpRight
-        int e = row + rowMove;
-        int f = col + colMove;
-        while (board.inBounds(e, f)) {
-            ChessPosition next = new ChessPosition(e, f);
+        int i = row + rowMove;
+        int j = col + colMove;
+        while (board.inBounds(i, j)) {
+            ChessPosition next = new ChessPosition(i, j);
             if (board.getPiece(next) == null) {
                 moves.add(new ChessMove(position, next, null));
-                e = e + rowMove;
-                f = f + colMove;
+                i = i + rowMove;
+                j = j + colMove;
             } else if (board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                 moves.add(new ChessMove(position, next, null));
                 break;
