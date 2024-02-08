@@ -160,12 +160,12 @@ public class ChessGame {
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     Collection<ChessMove> potentialMoves = piece.pieceMoves(board, position);
                     for (ChessMove moves : potentialMoves) {
-                        ChessPosition start = moves.getStartPosition();
-                        testMove(moves);
+                        ChessPiece capturedPiece = board.getPiece(moves.getEndPosition());
+                        testMove(moves, piece);
 
                         boolean stillInCheck = isInCheck(teamColor);
 
-                        undoMove(piece, start);
+                        undoMove(moves, piece, capturedPiece);
 
                         if (!stillInCheck) {
                             return false;
@@ -177,14 +177,22 @@ public class ChessGame {
         return true;
     }
 
-    public void testMove(ChessMove move) {
-        throw new RuntimeException("Not implemented");
+    public void testMove(ChessMove move, ChessPiece piece) {
+        ChessPosition end = move.getEndPosition();
+        ChessPosition start = move.getStartPosition();
+        board.addPiece(end, piece);
+        board.removePiece(start);
     }
 
-    public void undoMove(ChessPiece piece, ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+    public void undoMove(ChessMove move, ChessPiece piece, ChessPiece capturedPiece) {
+        ChessPosition end = move.getEndPosition();
+        ChessPosition start = move.getStartPosition();
+        board.removePiece(end);
+        board.addPiece(start, piece);
+        if (capturedPiece != null) {
+            board.addPiece(end, capturedPiece);
+        }
     }
-
 
 
     /**
