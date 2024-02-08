@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -90,7 +91,27 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = board.getPiece(startPosition);
+        if (piece == null) {
+            return null;
+        }
+
+        Collection<ChessMove> validMoves = new HashSet<>();
+        Collection<ChessMove> potentialMoves = piece.pieceMoves(board, startPosition);
+
+        for (ChessMove move : potentialMoves) {
+            ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
+            testMove(move, piece);
+
+            boolean kingInCheck = isInCheck(piece.getTeamColor());
+
+            undoMove(move, piece, capturedPiece);
+
+            if (!kingInCheck) {
+                validMoves.add(move);
+            }
+        }
+         return validMoves;
     }
 
     /**
@@ -159,13 +180,13 @@ public class ChessGame {
 
                 if (piece != null && piece.getTeamColor() == teamColor) {
                     Collection<ChessMove> potentialMoves = piece.pieceMoves(board, position);
-                    for (ChessMove moves : potentialMoves) {
-                        ChessPiece capturedPiece = board.getPiece(moves.getEndPosition());
-                        testMove(moves, piece);
+                    for (ChessMove move : potentialMoves) {
+                        ChessPiece capturedPiece = board.getPiece(move.getEndPosition());
+                        testMove(move, piece);
 
                         boolean stillInCheck = isInCheck(teamColor);
 
-                        undoMove(moves, piece, capturedPiece);
+                        undoMove(move, piece, capturedPiece);
 
                         if (!stillInCheck) {
                             return false;
