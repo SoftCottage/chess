@@ -72,7 +72,7 @@ public class PawnMoves {
 
                 next = new ChessPosition(row - 1, col + i);
                 if (board.inBounds(row - 1, col + i)) {
-                    if (board.getPiece(next) != null && board.getPiece(next).getTeamColor() == ChessGame.TeamColor.WHITE) {
+                    if (board.getPiece(next) != null && board.getPiece(next).getTeamColor() != piece.getTeamColor()) {
                         if (next.getRow() == 1) {
                             Promote(position, next);
                         } else {
