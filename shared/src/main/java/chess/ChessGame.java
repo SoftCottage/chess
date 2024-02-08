@@ -127,6 +127,9 @@ public class ChessGame {
         if (piece == null) {
             throw new InvalidMoveException("start position null");
         }
+        if (piece.getTeamColor() != team) {
+            throw new InvalidMoveException("wrong team");
+        }
 
         Collection<ChessMove> validMoves = validMoves(start);
         boolean isValid = validMoves.contains(move);
@@ -144,6 +147,7 @@ public class ChessGame {
         else {
             team = TeamColor.BLACK;
         }
+        turn++;
     }
 
     /**
