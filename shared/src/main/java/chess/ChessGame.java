@@ -14,6 +14,7 @@ public class ChessGame {
 
     private TeamColor team;
     private ChessBoard board;
+    private int turn = 1;
 
 
     public ChessGame() {
@@ -121,7 +122,28 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition start = move.getStartPosition();
+        ChessPiece piece = board.getPiece(start);
+        if (piece == null) {
+            throw new InvalidMoveException("start position null");
+        }
+
+        Collection<ChessMove> validMoves = validMoves(start);
+        boolean isValid = validMoves.contains(move);
+
+        if (isValid) {
+            testMove(move, piece);
+        }
+        else {
+            throw new InvalidMoveException("Invalid move");
+        }
+
+        if (turn % 2 == 0) {
+            team = TeamColor.WHITE;
+        }
+        else {
+            team = TeamColor.BLACK;
+        }
     }
 
     /**
@@ -201,8 +223,15 @@ public class ChessGame {
     public void testMove(ChessMove move, ChessPiece piece) {
         ChessPosition end = move.getEndPosition();
         ChessPosition start = move.getStartPosition();
-        board.addPiece(end, piece);
-        board.removePiece(start);
+        ChessPiece.PieceType type = move.getPromotionPiece();
+        ChessPiece promoted = new ChessPiece(team, type);
+        if (type != null) {
+            board.addPiece(end, promoted);
+            board.removePiece(start);
+        } else {
+            board.addPiece(end, piece);
+            board.removePiece(start);
+        }
     }
 
     public void undoMove(ChessMove move, ChessPiece piece, ChessPiece capturedPiece) {
