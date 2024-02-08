@@ -9,10 +9,15 @@ import java.util.Arrays;
  * signature of the existing methods.
  */
 public class ChessBoard {
+
     private ChessPiece[][] board = new ChessPiece[8][8];
 
     public ChessBoard() {
 
+    }
+
+    public ChessPiece[][] getBoard() {
+        return board;
     }
 
     /**
@@ -35,6 +40,7 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         return board[position.getRow()-1][position.getColumn()-1];
     }
+
 
     public boolean inBounds(int row, int col) {
         return row >= 1 && row <= 8 && col >= 1 && col <= 8;
