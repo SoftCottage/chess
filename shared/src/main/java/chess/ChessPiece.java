@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -68,11 +69,11 @@ public class ChessPiece {
         PieceType type = getPieceType();
         return switch (type) {
             case KING -> new KingMoves().pieceMoves(board, myPosition);
-            case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);
-            case BISHOP -> new BishopMoves().pieceMoves(board, myPosition);
-            case KNIGHT -> new KnightMoves().pieceMoves(board, myPosition);
-            case ROOK -> new RookMoves().pieceMoves(board, myPosition);
-            case PAWN -> new PawnMoves().pieceMoves(board, myPosition);
+            case QUEEN -> Collections.emptyList();
+            case BISHOP -> Collections.emptyList();
+            case KNIGHT -> Collections.emptyList();
+            case ROOK -> Collections.emptyList();
+            case PAWN -> Collections.emptyList();
         };
     }
 }
