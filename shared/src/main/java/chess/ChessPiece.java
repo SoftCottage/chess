@@ -72,7 +72,7 @@ public class ChessPiece {
             case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);
             case BISHOP -> new BishopMoves().pieceMoves(board, myPosition);
             case KNIGHT -> Collections.emptyList();
-            case ROOK -> Collections.emptyList();
+            case ROOK -> new RookMoves().pieceMoves(board, myPosition);
             case PAWN -> Collections.emptyList();
         };
     }
