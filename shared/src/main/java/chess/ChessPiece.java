@@ -70,7 +70,7 @@ public class ChessPiece {
         return switch (type) {
             case KING -> new KingMoves().pieceMoves(board, myPosition);
             case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);
-            case BISHOP -> Collections.emptyList();
+            case BISHOP -> new BishopMoves().pieceMoves(board, myPosition);
             case KNIGHT -> Collections.emptyList();
             case ROOK -> Collections.emptyList();
             case PAWN -> Collections.emptyList();
