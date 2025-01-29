@@ -69,6 +69,13 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+
+        ChessPiece piece = board.getPiece(myPosition);
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        int[] rowMove = null;
+        int [] colMove = null;
+
         return switch (getPieceType()) {
             case KING -> new KingMoves().pieceMoves(board, myPosition);
             case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);
@@ -77,5 +84,7 @@ public class ChessPiece {
             case ROOK -> new RookMoves().pieceMoves(board, myPosition);
             case PAWN -> new PawnMoves().pieceMoves(board, myPosition);
         };
+
+
     }
 }
