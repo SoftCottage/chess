@@ -76,15 +76,32 @@ public class ChessPiece {
         int[] rowMove = null;
         int [] colMove = null;
 
-        return switch (getPieceType()) {
-            case KING -> new KingMoves().pieceMoves(board, myPosition);
-            case QUEEN -> new QueenMoves().pieceMoves(board, myPosition);
-            case BISHOP -> new BishopMoves().pieceMoves(board, myPosition);
-            case KNIGHT -> new KnightMoves().pieceMoves(board, myPosition);
-            case ROOK -> new RookMoves().pieceMoves(board, myPosition);
-            case PAWN -> new PawnMoves().pieceMoves(board, myPosition);
-        };
-
-
+        switch (getPieceType()) {
+            case KING:
+                rowMove = new int[]{-1, -1, -1, 0, 1, 1, 1, 0};
+                colMove = new int[]{-1, 0, 1, 1, 1, 0, -1, -1};
+                break;
+            case QUEEN:
+                rowMove = new int[]{-1, -1, -1, 0, 1, 1, 1, 0}; // Rook + Bishop directions
+                colMove = new int[]{0, 1, -1, -1, 1, 0, -1, 1};
+                break;
+            case ROOK:
+                rowMove = new int[]{-1, 0, 1, 0};
+                colMove = new int[]{0, 1, 0, -1};
+                break;
+            case BISHOP:
+                rowMove = new int[]{-1, -1, 1, 1};
+                colMove = new int[]{-1, 1, -1, 1};
+                break;
+            case KNIGHT:
+                rowMove = new int[]{-2, -1, 1, 2, 2, 1, -1, -2};
+                colMove = new int[]{1, 2, 2, 1, -1, -2, -2, -1};
+                break;
+            case PAWN:
+                rowMove = new int[]{1}; // Pawns can only move one square forward
+                colMove = new int[]{0}; // Pawns move straight
+                break;
+        }
+        return null;
     }
 }
