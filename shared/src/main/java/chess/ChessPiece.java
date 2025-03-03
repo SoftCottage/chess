@@ -81,6 +81,8 @@ public class ChessPiece {
 
     //Consolidate piece classes here
 
+    //yup
+
 /*    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
         ChessPiece piece = board.getPiece(myPosition);
