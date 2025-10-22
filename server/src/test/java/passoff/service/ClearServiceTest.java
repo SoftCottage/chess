@@ -1,16 +1,16 @@
 package passoff.service;
 
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import service.ClearService;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import model.AuthData;
-import model.GameData;
 import model.UserData;
-import org.junit.jupiter.api.*;
-import service.ClearService;
+import model.GameData;
+import model.AuthData;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ClearServiceTest {
