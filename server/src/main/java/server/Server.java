@@ -1,5 +1,5 @@
 package server;
-
+//comment to commit and push
 import io.javalin.Javalin;
 import handler.ClearHandler;
 import handler.RegisterHandler;
