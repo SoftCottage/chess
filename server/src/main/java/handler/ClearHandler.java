@@ -4,7 +4,8 @@ import io.javalin.http.Context;
 import service.ClearService;
 import dataaccess.DataAccessException;
 import com.google.gson.Gson;
-import java.util.HashMap;
+import model.ClearResult;
+
 import java.util.Map;
 
 public class ClearHandler {
@@ -19,9 +20,8 @@ public class ClearHandler {
 
     public void handle(Context ctx) {
         try {
-            clearService.clear();
-            // Return empty JSON object
-            ctx.status(200).result(gson.toJson(new HashMap<>()));
+            ClearResult result = clearService.clear();
+            ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
             ctx.status(500).json(Map.of("message", "Error: " + e.getMessage()));
         }

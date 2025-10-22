@@ -9,6 +9,7 @@ import dataaccess.DataAccessException;
 import model.UserData;
 import model.GameData;
 import model.AuthData;
+import model.ClearResult;
 
 import java.util.List;
 
@@ -32,7 +33,10 @@ public class ClearServiceTest {
     @Test
     @DisplayName("Clear empty database")
     public void clearEmptyDatabase() {
-        assertDoesNotThrow(() -> clearService.clear(), "Clearing an already empty database should not throw");
+        assertDoesNotThrow(() -> {
+            ClearResult result = clearService.clear();
+            assertEquals("Clear succeeded", result.getMessage());
+        });
     }
 
     @Test
@@ -47,15 +51,16 @@ public class ClearServiceTest {
         dataAccess.createAuth(new AuthData("token2", "user2"));
 
         // Add games
-        int game1ID = dataAccess.createGame("Test Game 1");
-        int game2ID = dataAccess.createGame("Test Game 2");
+        dataAccess.createGame("Test Game 1");
+        dataAccess.createGame("Test Game 2");
 
         // Verify database populated
         List<GameData> gamesBefore = dataAccess.listGames();
         assertEquals(2, gamesBefore.size(), "Database should have 2 games before clearing");
 
         // Perform clear
-        assertDoesNotThrow(() -> clearService.clear(), "Clearing populated database should not throw");
+        ClearResult result = clearService.clear();
+        assertEquals("Clear succeeded", result.getMessage());
 
         // Verify database empty
         List<GameData> gamesAfter = dataAccess.listGames();
@@ -69,8 +74,9 @@ public class ClearServiceTest {
     @Test
     @DisplayName("Multiple clears in a row")
     public void multipleClears() {
-        assertDoesNotThrow(() -> clearService.clear(), "First clear should not throw");
-        assertDoesNotThrow(() -> clearService.clear(), "Second clear should not throw");
-        assertDoesNotThrow(() -> clearService.clear(), "Third clear should not throw");
+        for (int i = 0; i < 3; i++) {
+            ClearResult result = assertDoesNotThrow(() -> clearService.clear());
+            assertEquals("Clear succeeded", result.getMessage());
+        }
     }
 }
