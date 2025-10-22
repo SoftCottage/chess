@@ -6,17 +6,17 @@ import model.RegisterRequest;
 import model.RegisterResult;
 import com.google.gson.Gson;
 
-public class RegisterHandler {
+public class UserHandler {
 
     private final UserService userService;
     private final Gson gson;
 
-    public RegisterHandler(UserService userService) {
+    public UserHandler(UserService userService) {
         this.userService = userService;
         this.gson = new Gson();
     }
 
-    public void handle(Context ctx) {
+    public void handleRegister(Context ctx) {
         try {
             // Parse the request body as RegisterRequest
             RegisterRequest request = gson.fromJson(ctx.body(), RegisterRequest.class);

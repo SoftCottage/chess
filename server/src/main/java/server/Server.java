@@ -2,7 +2,7 @@ package server;
 //comment to commit and push
 import io.javalin.Javalin;
 import handler.ClearHandler;
-import handler.RegisterHandler;
+import handler.UserHandler;
 import service.ClearService;
 import service.UserService;
 import dataaccess.DataAccess;
@@ -25,8 +25,8 @@ public class Server {
 
         // User endpoints
         var userService = new UserService(dataAccess);
-        var registerHandler = new RegisterHandler(userService);
-        javalin.post("/user", registerHandler::handle);
+        var userHandler = new UserHandler(userService);
+        javalin.post("/user", userHandler::handleRegister);
 
         // future: login, logout, /game, etc.
     }
