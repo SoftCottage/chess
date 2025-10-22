@@ -42,9 +42,9 @@ public class RegisterService {
             return new RegisterResult(request.getUsername(), token);
 
         } catch (DataAccessException e) {
-            return new RegisterResult("Error: " + e.getMessage());
+            return new RegisterResult("Error: database failure - " + e.getMessage());
         } catch (Exception e) {
-            return new RegisterResult("Error: " + e.getMessage());
+            return new RegisterResult("Error: unexpected failure - " + e.getMessage());
         }
     }
 }
