@@ -9,13 +9,19 @@ import model.UserData;
 
 import java.util.UUID;
 
-public class RegisterService {
+public class UserService {
+
     private final DataAccess dataAccess;
 
-    public RegisterService(DataAccess dataAccess) {
+    public UserService(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 
+    /**
+     * Registers a new user.
+     * @param request the registration request containing username, password, email
+     * @return the registration result containing username and auth token, or error message
+     */
     public RegisterResult register(RegisterRequest request) {
         try {
             // Validate request
@@ -23,12 +29,12 @@ public class RegisterService {
                 return new RegisterResult("Error: bad request");
             }
 
-            // Check if username exists
+            // Check if username already exists
             try {
                 dataAccess.getUser(request.getUsername());
                 return new RegisterResult("Error: already taken");
             } catch (DataAccessException ignored) {
-                // This means the user doesn't exist — continue
+                // User doesn't exist — continue
             }
 
             // Create user
@@ -46,5 +52,14 @@ public class RegisterService {
         } catch (Exception e) {
             return new RegisterResult("Error: unexpected failure - " + e.getMessage());
         }
+    }
+
+    // Placeholder methods for future endpoints
+    public void login(/*LoginRequest request*/) {
+        // TODO: implement login
+    }
+
+    public void logout(/*LogoutRequest request*/) {
+        // TODO: implement logout
     }
 }

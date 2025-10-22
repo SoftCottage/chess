@@ -4,7 +4,7 @@ import io.javalin.Javalin;
 import handler.ClearHandler;
 import handler.RegisterHandler;
 import service.ClearService;
-import service.RegisterService;
+import service.UserService;
 import dataaccess.DataAccess;
 
 public class Server {
@@ -23,12 +23,12 @@ public class Server {
         var clearHandler = new ClearHandler(clearService);
         javalin.delete("/db", clearHandler::handle);
 
-        // Register endpoint
-        var registerService = new RegisterService(dataAccess);
-        var registerHandler = new RegisterHandler(registerService);
+        // User endpoints
+        var userService = new UserService(dataAccess);
+        var registerHandler = new RegisterHandler(userService);
         javalin.post("/user", registerHandler::handle);
 
-        // future: login, session delete, /game, etc.
+        // future: login, logout, /game, etc.
     }
 
     public int run(int desiredPort) {
