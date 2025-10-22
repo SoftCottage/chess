@@ -1,5 +1,5 @@
 package handler;
-//comment to commit and push
+
 import io.javalin.http.Context;
 import service.UserService;
 import model.RegisterRequest;
@@ -24,22 +24,26 @@ public class RegisterHandler {
             // Call the service
             RegisterResult result = userService.register(request);
 
-            // Check for error
+            // Serialize response
+            String jsonResult = gson.toJson(result);
+
+            // Set HTTP status based on error or success
             if (result.getMessage() != null) {
                 if (result.getMessage().contains("bad request")) {
-                    ctx.status(400).json(result);
+                    ctx.status(400).result(jsonResult);
                 } else if (result.getMessage().contains("already taken")) {
-                    ctx.status(403).json(result);
+                    ctx.status(403).result(jsonResult);
                 } else {
-                    ctx.status(500).json(result);
+                    ctx.status(500).result(jsonResult);
                 }
             } else {
-                // Success
-                ctx.status(200).json(result);
+                ctx.status(200).result(jsonResult);
             }
 
         } catch (Exception e) {
-            ctx.status(500).json(new RegisterResult("Error: " + e.getMessage()));
+            // Unexpected error
+            String errorJson = gson.toJson(new RegisterResult("Error: " + e.getMessage()));
+            ctx.status(500).result(errorJson);
         }
     }
 }

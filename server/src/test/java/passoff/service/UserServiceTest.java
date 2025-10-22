@@ -8,19 +8,18 @@ import dataaccess.DataAccessException;
 import model.RegisterRequest;
 import model.RegisterResult;
 import model.UserData;
-import model.AuthData;
-import service.RegisterService;
+import service.UserService;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RegisterServiceTest {
+public class UserServiceTest {
 
     private static DataAccess dataAccess;
-    private static RegisterService registerService;
+    private static UserService userService;
 
     @BeforeAll
     public static void setup() {
         dataAccess = new DataAccess();
-        registerService = new RegisterService(dataAccess);
+        userService = new UserService(dataAccess);
     }
 
     @BeforeEach
@@ -33,7 +32,7 @@ public class RegisterServiceTest {
     @DisplayName("Register success")
     public void registerSuccess() {
         RegisterRequest req = new RegisterRequest("alice", "pw", "a@mail.com");
-        RegisterResult res = registerService.register(req);
+        RegisterResult res = userService.register(req);
 
         assertNull(res.getMessage(), "Success response should have null message");
         assertEquals("alice", res.getUsername(), "Username should match");
@@ -44,7 +43,7 @@ public class RegisterServiceTest {
     @DisplayName("Register bad request (missing fields)")
     public void registerBadRequest() {
         RegisterRequest req = new RegisterRequest(null, "pw", "a@mail.com"); // missing username
-        RegisterResult res = registerService.register(req);
+        RegisterResult res = userService.register(req);
 
         assertNotNull(res.getMessage());
         assertTrue(res.getMessage().toLowerCase().contains("bad request"));
@@ -59,7 +58,7 @@ public class RegisterServiceTest {
         dataAccess.createUser(new UserData("bob", "pw", "b@mail.com"));
 
         RegisterRequest req = new RegisterRequest("bob", "pw2", "b2@mail.com");
-        RegisterResult res = registerService.register(req);
+        RegisterResult res = userService.register(req);
 
         assertNotNull(res.getMessage());
         assertTrue(res.getMessage().toLowerCase().contains("already taken"));
