@@ -1,0 +1,27 @@
+package model;
+
+public class RegisterResult {
+    private String username;
+    private String authToken;
+    private String message;
+
+    // Success constructor
+    public RegisterResult(String username, String authToken) {
+        this.username = username;
+        this.authToken = authToken;
+        this.message = null;
+    }
+
+    // Error constructor
+    public RegisterResult(String message) {
+        this.message = message;
+    }
+
+    public String getUsername() { return username; }
+    public String getAuthToken() { return authToken; }
+    public String getMessage() { return message; }
+
+    public boolean isSuccess() {
+        return message == null;
+    }
+}
