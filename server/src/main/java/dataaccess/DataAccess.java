@@ -1,35 +1,32 @@
+// DataAccess.java
 package dataaccess;
 
 import model.UserData;
 import model.GameData;
 import model.AuthData;
-import chess.ChessGame;
 
 import java.util.*;
 
 public class DataAccess {
-
     private final Map<String, UserData> users = new HashMap<>();
     private final Map<Integer, GameData> games = new HashMap<>();
     private final Map<String, AuthData> auths = new HashMap<>();
-    private int nextGameID = 1; // auto-increment game ID
+    private int nextGameID = 1;
 
-    /** Clears all data */
     public void clearDatabase() throws DataAccessException {
         try {
             users.clear();
             games.clear();
             auths.clear();
+            nextGameID = 1;
         } catch (Exception ex) {
             throw new DataAccessException("Error clearing database", ex);
         }
     }
 
-    // ------------------------
-    // User methods
-    // ------------------------
+    // USER METHODS
     public void createUser(UserData u) throws DataAccessException {
-        if (users.containsKey(u.username())) throw new DataAccessException("User already exists");
+        if (u == null || u.username() == null) throw new DataAccessException("Invalid user");
         users.put(u.username(), u);
     }
 
@@ -39,35 +36,9 @@ public class DataAccess {
         return u;
     }
 
-    // ------------------------
-    // Game methods
-    // ------------------------
-    public GameData createGame(String gameName) {
-        int id = nextGameID++;
-        GameData g = new GameData(id, null, null, gameName, new ChessGame());
-        games.put(id, g);
-        return g;
-    }
-
-    public GameData getGame(int gameID) throws DataAccessException {
-        GameData g = games.get(gameID);
-        if (g == null) throw new DataAccessException("Game not found");
-        return g;
-    }
-
-    public List<GameData> listGames() {
-        return new ArrayList<>(games.values());
-    }
-
-    public void updateGame(GameData g) throws DataAccessException {
-        if (!games.containsKey(g.gameID())) throw new DataAccessException("Game not found");
-        games.put(g.gameID(), g);
-    }
-
-    // ------------------------
-    // Auth methods
-    // ------------------------
-    public void createAuth(AuthData a) {
+    // AUTH METHODS
+    public void createAuth(AuthData a) throws DataAccessException {
+        if (a == null || a.authToken() == null) throw new DataAccessException("Invalid auth");
         auths.put(a.authToken(), a);
     }
 
@@ -77,8 +48,15 @@ public class DataAccess {
         return a;
     }
 
-    public void deleteAuth(String token) throws DataAccessException {
-        if (!auths.containsKey(token)) throw new DataAccessException("Auth not found");
-        auths.remove(token);
+    // GAME METHODS
+    public int createGame(String gameName) throws DataAccessException {
+        if (gameName == null) throw new DataAccessException("Invalid game name");
+        int id = nextGameID++;
+        games.put(id, new GameData(id, null, null, gameName, null));
+        return id;
+    }
+
+    public List<GameData> listGames() {
+        return new ArrayList<>(games.values());
     }
 }
