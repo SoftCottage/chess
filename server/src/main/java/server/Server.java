@@ -27,6 +27,8 @@ public class Server {
         var userService = new UserService(dataAccess);
         var userHandler = new UserHandler(userService);
         javalin.post("/user", userHandler::handleRegister);
+        javalin.post("/session", userHandler::handleLogin);
+
 
         // future: login, logout, /game, etc.
     }

@@ -6,6 +6,8 @@ import model.AuthData;
 import model.RegisterRequest;
 import model.RegisterResult;
 import model.UserData;
+import model.LoginRequest;
+import model.LoginResult;
 
 import java.util.UUID;
 
@@ -54,10 +56,37 @@ public class UserService {
         }
     }
 
-    // Placeholder methods for future endpoints
-    public void login(/*LoginRequest request*/) {
-        // TODO: implement login
+    public LoginResult login(LoginRequest request) {
+        try {
+            // Validate request
+            if (request.getUsername() == null || request.getPassword() == null) {
+                return new LoginResult("Error: bad request");
+            }
+
+            // Retrieve user
+            UserData user = dataAccess.getUser(request.getUsername());
+
+            // Check password (plain text for now — later hash)
+            if (!user.password().equals(request.getPassword())) {
+                return new LoginResult("Error: unauthorized");
+            }
+
+            // Generate new auth token
+            String token = UUID.randomUUID().toString();
+            dataAccess.createAuth(new AuthData(token, request.getUsername()));
+
+            return new LoginResult(request.getUsername(), token);
+
+        } catch (DataAccessException e) {
+            if (e.getMessage().contains("not found")) {
+                return new LoginResult("Error: unauthorized");
+            }
+            return new LoginResult("Error: database failure - " + e.getMessage());
+        } catch (Exception e) {
+            return new LoginResult("Error: unexpected failure - " + e.getMessage());
+        }
     }
+
 
     public void logout(/*LogoutRequest request*/) {
         // TODO: implement logout

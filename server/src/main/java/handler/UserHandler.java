@@ -5,6 +5,8 @@ import service.UserService;
 import model.RegisterRequest;
 import model.RegisterResult;
 import com.google.gson.Gson;
+import model.LoginRequest;
+import model.LoginResult;
 
 public class UserHandler {
 
@@ -46,4 +48,36 @@ public class UserHandler {
             ctx.status(500).result(errorJson);
         }
     }
+
+    public void handleLogin(Context ctx) {
+        try {
+            // Parse request
+            LoginRequest request = gson.fromJson(ctx.body(), LoginRequest.class);
+
+            // Call service
+            LoginResult result = userService.login(request);
+
+            // Convert to JSON
+            String json = gson.toJson(result);
+            ctx.contentType("application/json");
+
+            // Determine status code
+            if (result.getMessage() != null) {
+                if (result.getMessage().contains("bad request")) {
+                    ctx.status(400).result(json);
+                } else if (result.getMessage().contains("unauthorized")) {
+                    ctx.status(401).result(json);
+                } else {
+                    ctx.status(500).result(json);
+                }
+            } else {
+                ctx.status(200).result(json);
+            }
+
+        } catch (Exception e) {
+            String errorJson = gson.toJson(new LoginResult("Error: " + e.getMessage()));
+            ctx.status(500).result(errorJson);
+        }
+    }
+
 }
