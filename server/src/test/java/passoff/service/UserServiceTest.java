@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
+import service.UserService;
+import model.UserData;
 import model.RegisterRequest;
 import model.RegisterResult;
 import model.LoginRequest;
 import model.LoginResult;
-import model.UserData;
-import service.UserService;
+import model.LogoutRequest;
+import model.LogoutResult;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserServiceTest {
@@ -134,5 +136,43 @@ public class UserServiceTest {
         assertTrue(res.getMessage().toLowerCase().contains("unauthorized"));
         assertNull(res.getUsername());
         assertNull(res.getAuthToken());
+    }
+
+    // ----------------- LOGOUT TESTS -----------------
+
+    @Test
+    @Order(8)
+    @DisplayName("Logout success")
+    public void logoutSuccess() {
+        // Register and login
+        RegisterRequest regReq = new RegisterRequest("frank", "pw", "f@mail.com");
+        userService.register(regReq);
+
+        LoginRequest loginReq = new LoginRequest("frank", "pw");
+        LoginResult loginRes = userService.login(loginReq);
+        assertNotNull(loginRes.getAuthToken(), "Auth token should exist after login");
+
+        // Now logout
+        LogoutRequest logoutReq = new LogoutRequest(loginRes.getAuthToken());
+        LogoutResult logoutRes = userService.logout(logoutReq);
+
+        assertNull(logoutRes.getMessage(), "Success response should have null message");
+
+        // Verify token is invalidated
+        LogoutResult secondLogout = userService.logout(logoutReq);
+        assertNotNull(secondLogout.getMessage(), "Second logout should fail");
+        assertTrue(secondLogout.getMessage().toLowerCase().contains("unauthorized"));
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("Logout unauthorized (invalid token)")
+    public void logoutUnauthorized() {
+        // Attempt to logout with invalid token
+        LogoutRequest logoutReq = new LogoutRequest("fakeToken");
+        LogoutResult logoutRes = userService.logout(logoutReq);
+
+        assertNotNull(logoutRes.getMessage());
+        assertTrue(logoutRes.getMessage().toLowerCase().contains("unauthorized"));
     }
 }
