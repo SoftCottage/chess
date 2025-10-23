@@ -7,6 +7,8 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.RegisterRequest;
 import model.RegisterResult;
+import model.LoginRequest;
+import model.LoginResult;
 import model.UserData;
 import service.UserService;
 
@@ -28,7 +30,10 @@ public class UserServiceTest {
         dataAccess.clearDatabase();
     }
 
+    // ----------------- REGISTER TESTS -----------------
+
     @Test
+    @Order(1)
     @DisplayName("Register success")
     public void registerSuccess() {
         RegisterRequest req = new RegisterRequest("alice", "pw", "a@mail.com");
@@ -40,6 +45,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @Order(2)
     @DisplayName("Register bad request (missing fields)")
     public void registerBadRequest() {
         RegisterRequest req = new RegisterRequest(null, "pw", "a@mail.com"); // missing username
@@ -52,6 +58,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @Order(3)
     @DisplayName("Register duplicate username")
     public void registerDuplicate() throws DataAccessException {
         // Pre-create user in dataAccess
@@ -62,6 +69,69 @@ public class UserServiceTest {
 
         assertNotNull(res.getMessage());
         assertTrue(res.getMessage().toLowerCase().contains("already taken"));
+        assertNull(res.getUsername());
+        assertNull(res.getAuthToken());
+    }
+
+    // ----------------- LOGIN TESTS -----------------
+
+    @Test
+    @Order(4)
+    @DisplayName("Login success")
+    public void loginSuccess() {
+        // First register a user
+        RegisterRequest regReq = new RegisterRequest("charlie", "mypw", "c@mail.com");
+        userService.register(regReq);
+
+        // Now login
+        LoginRequest loginReq = new LoginRequest("charlie", "mypw");
+        LoginResult loginRes = userService.login(loginReq);
+
+        assertNull(loginRes.getMessage(), "Success response should have null message");
+        assertEquals("charlie", loginRes.getUsername(), "Username should match");
+        assertNotNull(loginRes.getAuthToken(), "Auth token should be present");
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Login bad request (missing fields)")
+    public void loginBadRequest() {
+        LoginRequest req = new LoginRequest(null, "pw"); // missing username
+        LoginResult res = userService.login(req);
+
+        assertNotNull(res.getMessage());
+        assertTrue(res.getMessage().toLowerCase().contains("bad request"));
+        assertNull(res.getUsername());
+        assertNull(res.getAuthToken());
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Login unauthorized (wrong password)")
+    public void loginUnauthorizedWrongPassword() {
+        // Register user first
+        userService.register(new RegisterRequest("david", "rightpw", "d@mail.com"));
+
+        // Try login with wrong password
+        LoginRequest req = new LoginRequest("david", "wrongpw");
+        LoginResult res = userService.login(req);
+
+        assertNotNull(res.getMessage());
+        assertTrue(res.getMessage().toLowerCase().contains("unauthorized"));
+        assertNull(res.getUsername());
+        assertNull(res.getAuthToken());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Login unauthorized (nonexistent user)")
+    public void loginUnauthorizedNoUser() {
+        // Attempt login for user that doesn't exist
+        LoginRequest req = new LoginRequest("eve", "pw");
+        LoginResult res = userService.login(req);
+
+        assertNotNull(res.getMessage());
+        assertTrue(res.getMessage().toLowerCase().contains("unauthorized"));
         assertNull(res.getUsername());
         assertNull(res.getAuthToken());
     }
