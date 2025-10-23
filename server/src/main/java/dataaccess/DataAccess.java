@@ -48,6 +48,14 @@ public class DataAccess {
         return a;
     }
 
+    public void deleteAuth(String token) throws DataAccessException {
+        if (token == null || !auths.containsKey(token)) {
+            throw new DataAccessException("Auth not found");
+        }
+        auths.remove(token);
+    }
+
+
     // GAME METHODS
     public int createGame(String gameName) throws DataAccessException {
         if (gameName == null) throw new DataAccessException("Invalid game name");
