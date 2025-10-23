@@ -2,12 +2,14 @@ package service;
 //comment to commit and push
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
+import model.UserData;
 import model.AuthData;
 import model.RegisterRequest;
 import model.RegisterResult;
-import model.UserData;
 import model.LoginRequest;
 import model.LoginResult;
+import model.LogoutRequest;
+import model.LogoutResult;
 
 import java.util.UUID;
 
@@ -87,8 +89,27 @@ public class UserService {
         }
     }
 
+    public LogoutResult logout(LogoutRequest request) {
+        try {
+            // Validate request
+            if (request.getAuthToken() == null) {
+                return new LogoutResult("Error: bad request");
+            }
 
-    public void logout(/*LogoutRequest request*/) {
-        // TODO: implement logout
+            // Try to delete the auth token
+            dataAccess.deleteAuth(request.getAuthToken());
+
+            // Successful logout
+            return new LogoutResult(null);
+
+        } catch (DataAccessException e) {
+            if (e.getMessage().contains("Auth not found")) {
+                return new LogoutResult("Error: unauthorized");
+            }
+            return new LogoutResult("Error: database failure - " + e.getMessage());
+        } catch (Exception e) {
+            return new LogoutResult("Error: unexpected failure - " + e.getMessage());
+        }
     }
+
 }

@@ -7,6 +7,8 @@ import model.RegisterResult;
 import com.google.gson.Gson;
 import model.LoginRequest;
 import model.LoginResult;
+import model.LogoutRequest;
+import model.LogoutResult;
 
 public class UserHandler {
 
@@ -76,6 +78,45 @@ public class UserHandler {
 
         } catch (Exception e) {
             String errorJson = gson.toJson(new LoginResult("Error: " + e.getMessage()));
+            ctx.status(500).result(errorJson);
+        }
+    }
+
+    public void handleLogout(Context ctx) {
+        try {
+            // Prefer header for auth token
+            String authHeader = ctx.header("Authorization");
+
+            if (authHeader == null || authHeader.isBlank()) {
+                // fallback to body (if tests send it that way)
+                LogoutRequest request = gson.fromJson(ctx.body(), LogoutRequest.class);
+                if (request == null || request.getAuthToken() == null) {
+                    ctx.status(400).result(gson.toJson(new LogoutResult("Error: bad request")));
+                    return;
+                }
+                authHeader = request.getAuthToken();
+            }
+
+            LogoutRequest request = new LogoutRequest(authHeader);
+            LogoutResult result = userService.logout(request);
+
+            String json = gson.toJson(result);
+            ctx.contentType("application/json");
+
+            if (result.getMessage() != null) {
+                if (result.getMessage().contains("bad request")) {
+                    ctx.status(400).result(json);
+                } else if (result.getMessage().contains("unauthorized")) {
+                    ctx.status(401).result(json);
+                } else {
+                    ctx.status(500).result(json);
+                }
+            } else {
+                ctx.status(200).result(json);
+            }
+
+        } catch (Exception e) {
+            String errorJson = gson.toJson(new LogoutResult("Error: " + e.getMessage()));
             ctx.status(500).result(errorJson);
         }
     }
