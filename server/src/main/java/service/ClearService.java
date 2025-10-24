@@ -13,7 +13,7 @@ public class ClearService {
     }
 
     public ClearResult clear() throws DataAccessException {
-        dataAccess.clearDatabase();  // <-- updated to correct method
+        dataAccess.clearDatabase();
         return new ClearResult("Clear succeeded");
     }
 }

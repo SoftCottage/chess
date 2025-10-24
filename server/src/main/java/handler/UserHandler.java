@@ -22,16 +22,12 @@ public class UserHandler {
 
     public void handleRegister(Context ctx) {
         try {
-            // Parse the request body as RegisterRequest
             RegisterRequest request = gson.fromJson(ctx.body(), RegisterRequest.class);
 
-            // Call the service
             RegisterResult result = userService.register(request);
 
-            // Serialize response
             String jsonResult = gson.toJson(result);
 
-            // Set HTTP status based on error or success
             if (result.getMessage() != null) {
                 if (result.getMessage().contains("bad request")) {
                     ctx.status(400).result(jsonResult);
@@ -45,7 +41,6 @@ public class UserHandler {
             }
 
         } catch (Exception e) {
-            // Unexpected error
             String errorJson = gson.toJson(new RegisterResult("Error: " + e.getMessage()));
             ctx.status(500).result(errorJson);
         }
@@ -53,17 +48,13 @@ public class UserHandler {
 
     public void handleLogin(Context ctx) {
         try {
-            // Parse request
             LoginRequest request = gson.fromJson(ctx.body(), LoginRequest.class);
 
-            // Call service
             LoginResult result = userService.login(request);
 
-            // Convert to JSON
             String json = gson.toJson(result);
             ctx.contentType("application/json");
 
-            // Determine status code
             if (result.getMessage() != null) {
                 if (result.getMessage().contains("bad request")) {
                     ctx.status(400).result(json);
@@ -84,11 +75,9 @@ public class UserHandler {
 
     public void handleLogout(Context ctx) {
         try {
-            // Prefer header for auth token
             String authHeader = ctx.header("Authorization");
 
             if (authHeader == null || authHeader.isBlank()) {
-                // fallback to body (if tests send it that way)
                 LogoutRequest request = gson.fromJson(ctx.body(), LogoutRequest.class);
                 if (request == null || request.getAuthToken() == null) {
                     ctx.status(400).result(gson.toJson(new LogoutResult("Error: bad request")));

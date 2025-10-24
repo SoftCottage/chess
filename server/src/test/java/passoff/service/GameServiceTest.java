@@ -29,7 +29,7 @@ public class GameServiceTest {
         dataAccess.clearDatabase();
     }
 
-    // ----------------- CREATE GAME TESTS -----------------
+    // Create Game Tests
 
     @Test
     @Order(1)
@@ -118,7 +118,7 @@ public class GameServiceTest {
         assertTrue(res.getMessage().toLowerCase().contains("error"));
     }
 
-    // ----------------- LIST GAMES TESTS -----------------
+    // List Games Tests
 
     @Test
     @Order(6)
@@ -183,7 +183,7 @@ public class GameServiceTest {
         assertNull(res.getGames(), "Games list should be null on bad request");
     }
 
-    // ----------------- JOIN GAME TESTS -----------------
+    // Join Game Tests
     @Test
     @Order(10)
     @DisplayName("Join Created Game Success")

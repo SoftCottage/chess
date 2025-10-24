@@ -13,7 +13,7 @@ public class GameService {
         this.dataAccess = dataAccess;
     }
 
-    // ----------------- CREATE GAME -----------------
+    // Create Game
     public CreateGameResult createGame(CreateGameRequest request) {
         try {
             if (request == null || request.getGameName() == null || request.getGameName().isBlank()) {
@@ -34,7 +34,7 @@ public class GameService {
         }
     }
 
-    // ----------------- LIST GAMES -----------------
+    // List Games
     public ListGamesResult listGames(ListGamesRequest request) {
         try {
             if (request == null || request.getAuthToken() == null || request.getAuthToken().isBlank()) {
@@ -53,10 +53,9 @@ public class GameService {
         }
     }
 
-    // ----------------- JOIN GAME -----------------
+    // Join Games
     public JoinGameResult joinGame(JoinGameRequest request) {
         try {
-            // Validate request
             if (request == null
                     || request.getAuthToken() == null || request.getAuthToken().isBlank()
                     || request.getGameID() == null
@@ -64,11 +63,9 @@ public class GameService {
                 return new JoinGameResult("Error: bad request");
             }
 
-            // Validate auth token
             AuthData auth = dataAccess.getAuth(request.getAuthToken());
             if (auth == null) return new JoinGameResult("Error: unauthorized");
 
-            // Fetch the game
             GameData game = dataAccess.getGameByID(request.getGameID());
             if (game == null) return new JoinGameResult("Error: bad request");
 
@@ -84,10 +81,9 @@ public class GameService {
                 return new JoinGameResult("Error: bad request");
             }
 
-            // Persist updated game
             dataAccess.updateGame(game);
 
-            return new JoinGameResult(); // success
+            return new JoinGameResult();
 
         } catch (DataAccessException e) {
             String msg = e.getMessage().toLowerCase().contains("auth") ? "Error: unauthorized" : "Error: " + e.getMessage();

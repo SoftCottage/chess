@@ -15,7 +15,7 @@ public class GameHandler {
         this.gson = new Gson();
     }
 
-    // ----------------- CREATE GAME -----------------
+    // Create Game
     public void createGame(Context ctx) {
         try {
             String authToken = ctx.header("Authorization");
@@ -43,7 +43,7 @@ public class GameHandler {
         }
     }
 
-    // ----------------- LIST GAMES -----------------
+    // List Game
     public void listGames(Context ctx) {
         try {
             String authToken = ctx.header("Authorization");
@@ -64,7 +64,7 @@ public class GameHandler {
         }
     }
 
-    // ----------------- JOIN GAME -----------------
+    // Join Game
     public void joinGame(Context ctx) {
         try {
             String authToken = ctx.header("Authorization");

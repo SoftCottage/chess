@@ -23,7 +23,7 @@ public class DataAccess {
         }
     }
 
-    // ----------------- USER METHODS -----------------
+    // User Methods
     public void createUser(UserData u) throws DataAccessException {
         if (u == null || u.username() == null) throw new DataAccessException("Invalid user");
         users.put(u.username(), u);
@@ -35,7 +35,7 @@ public class DataAccess {
         return u;
     }
 
-    // ----------------- AUTH METHODS -----------------
+    // Auth Methods
     public void createAuth(AuthData a) throws DataAccessException {
         if (a == null || a.authToken() == null) throw new DataAccessException("Invalid auth");
         auths.put(a.authToken(), a);
@@ -58,7 +58,7 @@ public class DataAccess {
         return auths.containsKey(token);
     }
 
-    // ----------------- GAME METHODS -----------------
+    // Game Methods
     public int createGame(String gameName) throws DataAccessException {
         if (gameName == null) throw new DataAccessException("Invalid game name");
         int id = nextGameID++;
