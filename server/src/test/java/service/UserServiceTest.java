@@ -1,18 +1,11 @@
-package passoff.service;
-
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+package service;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import service.UserService;
-import model.UserData;
-import model.RegisterRequest;
-import model.RegisterResult;
-import model.LoginRequest;
-import model.LoginResult;
-import model.LogoutRequest;
-import model.LogoutResult;
+import model.*;
+import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserServiceTest {

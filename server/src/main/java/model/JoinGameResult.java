@@ -1,4 +1,3 @@
-// JoinGameResult.java
 package model;
 
 public class JoinGameResult {

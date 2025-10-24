@@ -1,13 +1,11 @@
-package passoff.service;
-
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.*;
+package service;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import service.GameService;
-import service.UserService;
 import model.*;
+import org.junit.jupiter.api.*;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GameServiceTest {

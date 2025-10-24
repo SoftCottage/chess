@@ -3,7 +3,7 @@ package model;
 public class JoinGameRequest {
     private String authToken;
     private Integer gameID;
-    private String playerColor; // "WHITE" or "BLACK"
+    private String playerColor;
 
     public JoinGameRequest() {}
 
