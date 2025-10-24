@@ -1,4 +1,3 @@
-// DataAccess.java
 package dataaccess;
 
 import model.UserData;
@@ -24,7 +23,7 @@ public class DataAccess {
         }
     }
 
-    // USER METHODS
+    // ----------------- USER METHODS -----------------
     public void createUser(UserData u) throws DataAccessException {
         if (u == null || u.username() == null) throw new DataAccessException("Invalid user");
         users.put(u.username(), u);
@@ -36,7 +35,7 @@ public class DataAccess {
         return u;
     }
 
-    // AUTH METHODS
+    // ----------------- AUTH METHODS -----------------
     public void createAuth(AuthData a) throws DataAccessException {
         if (a == null || a.authToken() == null) throw new DataAccessException("Invalid auth");
         auths.put(a.authToken(), a);
@@ -59,7 +58,7 @@ public class DataAccess {
         return auths.containsKey(token);
     }
 
-    // GAME METHODS
+    // ----------------- GAME METHODS -----------------
     public int createGame(String gameName) throws DataAccessException {
         if (gameName == null) throw new DataAccessException("Invalid game name");
         int id = nextGameID++;
@@ -70,4 +69,15 @@ public class DataAccess {
     public List<GameData> listGames() {
         return new ArrayList<>(games.values());
     }
+
+    public GameData getGameByID(int id) {
+        return games.get(id);
+    }
+
+    public void updateGame(GameData game) {
+        if (game != null) {
+            games.put(game.gameID(), game);
+        }
+    }
+
 }

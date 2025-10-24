@@ -37,8 +37,7 @@ public class Server {
         var gameHandler = new GameHandler(gameService);
         javalin.post("/game", gameHandler::createGame);
         javalin.get("/game", gameHandler::listGames);
-        // upcoming endpoints:
-        // javalin.put("/game", gameHandler::joinGame);
+        javalin.put("/game", gameHandler::joinGame);
     }
 
     public int run(int desiredPort) {
