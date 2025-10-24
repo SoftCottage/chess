@@ -3,8 +3,10 @@ package server;
 import io.javalin.Javalin;
 import handler.ClearHandler;
 import handler.UserHandler;
+import handler.GameHandler;
 import service.ClearService;
 import service.UserService;
+import service.GameService;
 import dataaccess.DataAccess;
 
 public class Server {
@@ -30,9 +32,13 @@ public class Server {
         javalin.post("/session", userHandler::handleLogin);
         javalin.delete("/session", userHandler::handleLogout);
 
-
-
-        // future: login, logout, /game, etc.
+        // -------------------- GAME --------------------
+        var gameService = new GameService(dataAccess);
+        var gameHandler = new GameHandler(gameService);
+        javalin.post("/game", gameHandler::createGame);
+        // upcoming endpoints:
+        // javalin.get("/game", gameHandler::listGames);
+        // javalin.put("/game", gameHandler::joinGame);
     }
 
     public int run(int desiredPort) {
