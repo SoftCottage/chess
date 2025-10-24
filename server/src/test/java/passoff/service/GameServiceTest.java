@@ -117,4 +117,69 @@ public class GameServiceTest {
         assertNotNull(res.getMessage());
         assertTrue(res.getMessage().toLowerCase().contains("error"));
     }
+
+    // ----------------- LIST GAMES TESTS -----------------
+
+    @Test
+    @Order(6)
+    @DisplayName("List games success")
+    public void listGamesSuccess() {
+        // Register and login
+        userService.register(new RegisterRequest("alice", "pw", "a@mail.com"));
+        LoginResult loginRes = userService.login(new LoginRequest("alice", "pw"));
+        String authToken = loginRes.getAuthToken();
+
+        // Create a couple of games
+        gameService.createGame(new CreateGameRequest("Game One", authToken));
+        gameService.createGame(new CreateGameRequest("Game Two", authToken));
+
+        // List games
+        ListGamesRequest listReq = new ListGamesRequest(authToken);
+        ListGamesResult listRes = gameService.listGames(listReq);
+
+        assertNull(listRes.getMessage(), "Success response should have null message");
+        assertNotNull(listRes.getGames(), "Games list should not be null");
+        assertEquals(2, listRes.getGames().size(), "Should return 2 games");
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("List games unauthorized (invalid token)")
+    public void listGamesUnauthorized() {
+        ListGamesRequest req = new ListGamesRequest("fakeToken");
+        ListGamesResult res = gameService.listGames(req);
+
+        assertNotNull(res.getMessage(), "Unauthorized response should have a message");
+        assertTrue(res.getMessage().toLowerCase().contains("unauthorized"));
+        assertNull(res.getGames(), "Games list should be null on unauthorized");
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("List games empty list")
+    public void listGamesEmpty() {
+        // Register and login
+        userService.register(new RegisterRequest("bob", "pw", "b@mail.com"));
+        LoginResult loginRes = userService.login(new LoginRequest("bob", "pw"));
+
+        // List games without creating any
+        ListGamesRequest req = new ListGamesRequest(loginRes.getAuthToken());
+        ListGamesResult res = gameService.listGames(req);
+
+        assertNull(res.getMessage(), "Success response should have null message");
+        assertNotNull(res.getGames(), "Games list should not be null");
+        assertEquals(0, res.getGames().size(), "Games list should be empty");
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("List games bad request (null request)")
+    public void listGamesBadRequest() {
+        ListGamesResult res = gameService.listGames(null);
+
+        assertNotNull(res.getMessage(), "Response should have an error message");
+        assertTrue(res.getMessage().toLowerCase().contains("unauthorized")
+                || res.getMessage().toLowerCase().contains("error"));
+        assertNull(res.getGames(), "Games list should be null on bad request");
+    }
 }
