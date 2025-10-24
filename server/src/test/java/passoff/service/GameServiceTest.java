@@ -182,4 +182,98 @@ public class GameServiceTest {
                 || res.getMessage().toLowerCase().contains("error"));
         assertNull(res.getGames(), "Games list should be null on bad request");
     }
+
+    // ----------------- JOIN GAME TESTS -----------------
+    @Test
+    @Order(10)
+    @DisplayName("Join Created Game Success")
+    public void joinGameSuccess() throws DataAccessException {
+        // Register and login first
+        userService.register(new RegisterRequest("player1", "pw", "p1@mail.com"));
+        LoginResult loginRes = userService.login(new LoginRequest("player1", "pw"));
+        String authToken = loginRes.getAuthToken();
+
+        // Create a game
+        CreateGameRequest gameReq = new CreateGameRequest("Chess Match", authToken);
+        CreateGameResult createRes = gameService.createGame(gameReq);
+        int gameID = createRes.getGameID();
+
+        // Join as WHITE
+        JoinGameRequest joinReq = new JoinGameRequest(gameID, "WHITE", authToken);
+        JoinGameResult joinRes = gameService.joinGame(joinReq);
+
+        assertNull(joinRes.getMessage(), "Joining game should succeed with null message");
+
+        // Verify game has player assigned
+        ListGamesResult listRes = gameService.listGames(new ListGamesRequest(authToken));
+        GameData game = listRes.getGames().get(0);
+        assertEquals("player1", game.whiteUsername());
+        assertNull(game.blackUsername());
+
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("Join Game Unauthorized")
+    public void joinGameUnauthorized() {
+        JoinGameRequest joinReq = new JoinGameRequest(1, "WHITE", "fakeToken");
+        JoinGameResult res = gameService.joinGame(joinReq);
+
+        assertNotNull(res.getMessage());
+        assertTrue(res.getMessage().toLowerCase().contains("unauthorized"));
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("Join Game Bad Color")
+    public void joinGameBadColor() throws DataAccessException {
+        // Register and login first
+        userService.register(new RegisterRequest("player2", "pw", "p2@mail.com"));
+        LoginResult loginRes = userService.login(new LoginRequest("player2", "pw"));
+        String authToken = loginRes.getAuthToken();
+
+        // Create a game
+        CreateGameRequest gameReq = new CreateGameRequest("Chess Match 2", authToken);
+        CreateGameResult createRes = gameService.createGame(gameReq);
+        int gameID = createRes.getGameID();
+
+        for (String color : new String[]{null, "", "GREEN"}) {
+            JoinGameRequest joinReq = new JoinGameRequest(gameID, color, authToken);
+            JoinGameResult res = gameService.joinGame(joinReq);
+            assertNotNull(res.getMessage());
+            assertTrue(res.getMessage().toLowerCase().contains("bad request"));
+        }
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("Join Game Steal Team Color")
+    public void joinGameStealColor() throws DataAccessException {
+        // Register first user
+        userService.register(new RegisterRequest("player3", "pw", "p3@mail.com"));
+        LoginResult loginRes1 = userService.login(new LoginRequest("player3", "pw"));
+        String auth1 = loginRes1.getAuthToken();
+
+        // Create game
+        CreateGameRequest gameReq = new CreateGameRequest("Chess Match 3", auth1);
+        CreateGameResult createRes = gameService.createGame(gameReq);
+        int gameID = createRes.getGameID();
+
+        // Join as BLACK
+        JoinGameRequest joinReq1 = new JoinGameRequest(gameID, "BLACK", auth1);
+        JoinGameResult joinRes1 = gameService.joinGame(joinReq1);
+        assertNull(joinRes1.getMessage());
+
+        // Register second user
+        userService.register(new RegisterRequest("player4", "pw", "p4@mail.com"));
+        LoginResult loginRes2 = userService.login(new LoginRequest("player4", "pw"));
+        String auth2 = loginRes2.getAuthToken();
+
+        // Attempt to join same BLACK spot
+        JoinGameRequest joinReq2 = new JoinGameRequest(gameID, "BLACK", auth2);
+        JoinGameResult joinRes2 = gameService.joinGame(joinReq2);
+        assertNotNull(joinRes2.getMessage());
+        assertTrue(joinRes2.getMessage().toLowerCase().contains("already taken"));
+    }
+
 }
