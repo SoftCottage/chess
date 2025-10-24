@@ -28,11 +28,10 @@ public class UserServiceTest {
 
     @BeforeEach
     public void beforeEach() throws DataAccessException {
-        // ensure clean state
         dataAccess.clearDatabase();
     }
 
-    // ----------------- REGISTER TESTS -----------------
+    // Register Tests
 
     @Test
     @Order(1)
@@ -63,7 +62,6 @@ public class UserServiceTest {
     @Order(3)
     @DisplayName("Register duplicate username")
     public void registerDuplicate() throws DataAccessException {
-        // Pre-create user in dataAccess
         dataAccess.createUser(new UserData("bob", "pw", "b@mail.com"));
 
         RegisterRequest req = new RegisterRequest("bob", "pw2", "b2@mail.com");
@@ -75,17 +73,15 @@ public class UserServiceTest {
         assertNull(res.getAuthToken());
     }
 
-    // ----------------- LOGIN TESTS -----------------
+    // Login Tests
 
     @Test
     @Order(4)
     @DisplayName("Login success")
     public void loginSuccess() {
-        // First register a user
         RegisterRequest regReq = new RegisterRequest("charlie", "mypw", "c@mail.com");
         userService.register(regReq);
 
-        // Now login
         LoginRequest loginReq = new LoginRequest("charlie", "mypw");
         LoginResult loginRes = userService.login(loginReq);
 
@@ -111,10 +107,8 @@ public class UserServiceTest {
     @Order(6)
     @DisplayName("Login unauthorized (wrong password)")
     public void loginUnauthorizedWrongPassword() {
-        // Register user first
         userService.register(new RegisterRequest("david", "rightpw", "d@mail.com"));
 
-        // Try login with wrong password
         LoginRequest req = new LoginRequest("david", "wrongpw");
         LoginResult res = userService.login(req);
 
@@ -128,7 +122,6 @@ public class UserServiceTest {
     @Order(7)
     @DisplayName("Login unauthorized (nonexistent user)")
     public void loginUnauthorizedNoUser() {
-        // Attempt login for user that doesn't exist
         LoginRequest req = new LoginRequest("eve", "pw");
         LoginResult res = userService.login(req);
 
@@ -138,13 +131,12 @@ public class UserServiceTest {
         assertNull(res.getAuthToken());
     }
 
-    // ----------------- LOGOUT TESTS -----------------
+    // Logout Tests
 
     @Test
     @Order(8)
     @DisplayName("Logout success")
     public void logoutSuccess() {
-        // Register and login
         RegisterRequest regReq = new RegisterRequest("frank", "pw", "f@mail.com");
         userService.register(regReq);
 
@@ -152,13 +144,11 @@ public class UserServiceTest {
         LoginResult loginRes = userService.login(loginReq);
         assertNotNull(loginRes.getAuthToken(), "Auth token should exist after login");
 
-        // Now logout
         LogoutRequest logoutReq = new LogoutRequest(loginRes.getAuthToken());
         LogoutResult logoutRes = userService.logout(logoutReq);
 
         assertNull(logoutRes.getMessage(), "Success response should have null message");
 
-        // Verify token is invalidated
         LogoutResult secondLogout = userService.logout(logoutReq);
         assertNotNull(secondLogout.getMessage(), "Second logout should fail");
         assertTrue(secondLogout.getMessage().toLowerCase().contains("unauthorized"));
@@ -168,7 +158,6 @@ public class UserServiceTest {
     @Order(9)
     @DisplayName("Logout unauthorized (invalid token)")
     public void logoutUnauthorized() {
-        // Attempt to logout with invalid token
         LogoutRequest logoutReq = new LogoutRequest("fakeToken");
         LogoutResult logoutRes = userService.logout(logoutReq);
 

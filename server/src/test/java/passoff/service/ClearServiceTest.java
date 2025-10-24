@@ -27,7 +27,7 @@ public class ClearServiceTest {
 
     @BeforeEach
     public void beforeEach() throws DataAccessException {
-        clearService.clear(); // ensure clean state before each test
+        clearService.clear();
     }
 
     @Test
@@ -42,31 +42,24 @@ public class ClearServiceTest {
     @Test
     @DisplayName("Clear database with users, games, and auths")
     public void clearPopulatedDatabase() throws DataAccessException {
-        // Add users
         dataAccess.createUser(new UserData("user1", "pass1", "user1@mail.com"));
         dataAccess.createUser(new UserData("user2", "pass2", "user2@mail.com"));
 
-        // Add auth tokens
         dataAccess.createAuth(new AuthData("token1", "user1"));
         dataAccess.createAuth(new AuthData("token2", "user2"));
 
-        // Add games
         dataAccess.createGame("Test Game 1");
         dataAccess.createGame("Test Game 2");
 
-        // Verify database populated
         List<GameData> gamesBefore = dataAccess.listGames();
         assertEquals(2, gamesBefore.size(), "Database should have 2 games before clearing");
 
-        // Perform clear
         ClearResult result = clearService.clear();
         assertEquals("Clear succeeded", result.getMessage());
 
-        // Verify database empty
         List<GameData> gamesAfter = dataAccess.listGames();
         assertEquals(0, gamesAfter.size(), "Games list should be empty after clearing");
 
-        // Ensure users and auths are gone
         assertThrows(DataAccessException.class, () -> dataAccess.getUser("user1"));
         assertThrows(DataAccessException.class, () -> dataAccess.getAuth("token1"));
     }
