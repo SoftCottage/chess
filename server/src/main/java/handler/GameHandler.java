@@ -2,8 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import io.javalin.http.Context;
-import model.CreateGameRequest;
-import model.CreateGameResult;
+import model.*;
 import service.GameService;
 
 public class GameHandler {
@@ -61,6 +60,32 @@ public class GameHandler {
             // Handle unexpected server errors
             String errorJson = gson.toJson(new CreateGameResult("Error: " + e.getMessage()));
             ctx.status(500).result(errorJson);
+        }
+    }
+
+    // ----------------- LIST GAMES -----------------
+    public void listGames(Context ctx) {
+        try {
+            String authToken = ctx.header("authorization");
+            if (authToken == null || authToken.isBlank()) {
+                ctx.status(401).result(gson.toJson(new ListGamesResult("Error: unauthorized")));
+                return;
+            }
+
+            ListGamesRequest request = new ListGamesRequest(authToken);
+            ListGamesResult result = gameService.listGames(request);
+            String json = gson.toJson(result);
+
+            if (result.getMessage() != null) {
+                if (result.getMessage().contains("unauthorized")) ctx.status(401);
+                else ctx.status(500);
+            } else {
+                ctx.status(200);
+            }
+
+            ctx.result(json);
+        } catch (Exception e) {
+            ctx.status(500).result(gson.toJson(new ListGamesResult("Error: " + e.getMessage())));
         }
     }
 }

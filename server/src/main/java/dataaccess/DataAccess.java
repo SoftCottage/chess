@@ -55,6 +55,9 @@ public class DataAccess {
         auths.remove(token);
     }
 
+    public boolean isValidAuthToken(String token) {
+        return auths.containsKey(token);
+    }
 
     // GAME METHODS
     public int createGame(String gameName) throws DataAccessException {

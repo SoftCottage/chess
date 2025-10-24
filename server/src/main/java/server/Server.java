@@ -36,8 +36,8 @@ public class Server {
         var gameService = new GameService(dataAccess);
         var gameHandler = new GameHandler(gameService);
         javalin.post("/game", gameHandler::createGame);
+        javalin.get("/game", gameHandler::listGames);
         // upcoming endpoints:
-        // javalin.get("/game", gameHandler::listGames);
         // javalin.put("/game", gameHandler::joinGame);
     }
 

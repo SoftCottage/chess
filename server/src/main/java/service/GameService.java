@@ -38,4 +38,20 @@ public class GameService {
             return new CreateGameResult("Error: " + e.getMessage());
         }
     }
+    public ListGamesResult listGames(ListGamesRequest request) {
+        try {
+            if (request == null || request.getAuthToken() == null || request.getAuthToken().isBlank()) {
+                return new ListGamesResult("Error: unauthorized");
+            }
+
+            if (!dataAccess.isValidAuthToken(request.getAuthToken())) {
+                return new ListGamesResult("Error: unauthorized");
+            }
+
+            List<GameData> games = dataAccess.listGames();
+            return new ListGamesResult(games);
+        } catch (Exception e) {
+            return new ListGamesResult("Error: unexpected failure - " + e.getMessage());
+        }
+    }
 }
