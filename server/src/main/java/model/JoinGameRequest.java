@@ -1,4 +1,3 @@
-// JoinGameRequest.java
 package model;
 
 public class JoinGameRequest {

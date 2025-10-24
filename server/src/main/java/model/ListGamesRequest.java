@@ -1,4 +1,3 @@
-// ListGamesRequest.java
 package model;
 
 public class ListGamesRequest {

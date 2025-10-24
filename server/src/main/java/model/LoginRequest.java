@@ -4,7 +4,6 @@ public class LoginRequest {
     private String username;
     private String password;
 
-    // Gson requires a no-arg constructor
     public LoginRequest() {}
 
     public LoginRequest(String username, String password) {

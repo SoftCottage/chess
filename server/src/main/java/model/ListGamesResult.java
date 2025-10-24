@@ -1,4 +1,3 @@
-// ListGamesResult.java
 package model;
 
 import java.util.List;
