@@ -155,7 +155,7 @@ public class MySqlDataAccess {
     // Game Methods
     public int createGame(String gameName) throws DataAccessException {
         if (gameName == null) {
-            throw new DataAccessException("Invalid game name");
+            throw new DataAccessException("Game name cannot be null");
         }
 
         String sql = "INSERT INTO games (game_name) VALUES (?)";
@@ -164,23 +164,27 @@ public class MySqlDataAccess {
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, gameName);
-            stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
 
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getInt(1); // auto-increment ID
+            if (affectedRows == 0) {
+                throw new DataAccessException("Creating game failed, no rows affected");
+            }
+
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
                 } else {
-                    throw new DataAccessException("Failed to retrieve game ID");
+                    throw new DataAccessException("Creating game failed, no ID obtained");
                 }
             }
-        } catch (SQLException ex) {
-            throw new DataAccessException("Failed to create game", ex);
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to create game", e);
         }
     }
 
     public List<GameData> listGames() throws DataAccessException {
         String sql = "SELECT game_id, white_username, black_username, game_name FROM games";
-
         List<GameData> games = new ArrayList<>();
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -193,13 +197,14 @@ public class MySqlDataAccess {
                         rs.getString("white_username"),
                         rs.getString("black_username"),
                         rs.getString("game_name"),
-                        null // ChessGame object is null initially
+                        null // game object is null initially
                 ));
             }
 
             return games;
-        } catch (SQLException ex) {
-            throw new DataAccessException("Failed to list games", ex);
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to list games", e);
         }
     }
 
@@ -221,32 +226,36 @@ public class MySqlDataAccess {
                             null
                     );
                 } else {
-                    return null; // game not found
+                    return null;
                 }
             }
-        } catch (SQLException ex) {
-            throw new DataAccessException("Failed to get game by ID", ex);
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to get game by ID", e);
         }
     }
 
     public void updateGame(GameData game) throws DataAccessException {
         if (game == null) {
-            throw new DataAccessException("Invalid game");
+            throw new DataAccessException("Game cannot be null");
         }
 
-        String sql = "UPDATE games SET white_username = ?, black_username = ?, game_name = ? WHERE game_id = ?";
+        String sql = "UPDATE games SET white_username = ?, black_username = ? WHERE game_id = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, game.whiteUsername());
             stmt.setString(2, game.blackUsername());
-            stmt.setString(3, game.gameName());
-            stmt.setInt(4, game.gameID());
+            stmt.setInt(3, game.gameID());
 
-            stmt.executeUpdate();
-        } catch (SQLException ex) {
-            throw new DataAccessException("Failed to update game", ex);
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DataAccessException("Updating game failed, no rows affected");
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update game", e);
         }
     }
 
