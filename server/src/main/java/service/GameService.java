@@ -54,42 +54,42 @@ public class GameService {
     }
 
     // Join Games
-    public JoinGameResult joinGame(JoinGameRequest request) {
+    public JoinGameModels.JoinGameResult joinGame(JoinGameModels.JoinGameRequest request) {
         try {
             if (request == null
                     || request.getAuthToken() == null || request.getAuthToken().isBlank()
                     || request.getGameID() == null
                     || request.getPlayerColor() == null) {
-                return new JoinGameResult("Error: bad request");
+                return new JoinGameModels.JoinGameResult("Error: bad request");
             }
 
             AuthData auth = dataAccess.getAuth(request.getAuthToken());
-            if (auth == null) return new JoinGameResult("Error: unauthorized");
+            if (auth == null) return new JoinGameModels.JoinGameResult("Error: unauthorized");
 
             GameData game = dataAccess.getGameByID(request.getGameID());
-            if (game == null) return new JoinGameResult("Error: bad request");
+            if (game == null) return new JoinGameModels.JoinGameResult("Error: bad request");
 
             String color = request.getPlayerColor().toUpperCase();
 
             if (color.equals("WHITE")) {
-                if (game.whiteUsername() != null) return new JoinGameResult("Error: already taken");
+                if (game.whiteUsername() != null) return new JoinGameModels.JoinGameResult("Error: already taken");
                 game = game.withWhiteUsername(auth.username());
             } else if (color.equals("BLACK")) {
-                if (game.blackUsername() != null) return new JoinGameResult("Error: already taken");
+                if (game.blackUsername() != null) return new JoinGameModels.JoinGameResult("Error: already taken");
                 game = game.withBlackUsername(auth.username());
             } else {
-                return new JoinGameResult("Error: bad request");
+                return new JoinGameModels.JoinGameResult("Error: bad request");
             }
 
             dataAccess.updateGame(game);
 
-            return new JoinGameResult();
+            return new JoinGameModels.JoinGameResult();
 
         } catch (DataAccessException e) {
             String msg = e.getMessage().toLowerCase().contains("auth") ? "Error: unauthorized" : "Error: " + e.getMessage();
-            return new JoinGameResult(msg);
+            return new JoinGameModels.JoinGameResult(msg);
         } catch (Exception e) {
-            return new JoinGameResult("Error: unexpected failure - " + e.getMessage());
+            return new JoinGameModels.JoinGameResult("Error: unexpected failure - " + e.getMessage());
         }
     }
 }
