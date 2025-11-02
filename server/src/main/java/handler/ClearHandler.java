@@ -4,7 +4,7 @@ import io.javalin.http.Context;
 import service.ClearService;
 import dataaccess.DataAccessException;
 import com.google.gson.Gson;
-import model.ClearResult;
+import requestresult.ClearResult;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package model;
+package requestresult;
 
 public class LogoutResult {
     private String message;

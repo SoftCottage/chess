@@ -1,5 +1,5 @@
 // CreateGameRequest.java
-package model;
+package requestresult;
 
 public class CreateGameRequest {
     private String gameName;

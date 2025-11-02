@@ -4,12 +4,12 @@ import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.UserData;
 import model.AuthData;
-import model.RegisterRequest;
-import model.RegisterResult;
-import model.LoginRequest;
-import model.LoginResult;
-import model.LogoutRequest;
-import model.LogoutResult;
+import requestresult.RegisterRequest;
+import requestresult.RegisterResult;
+import requestresult.LoginRequest;
+import requestresult.LoginResult;
+import requestresult.LogoutRequest;
+import requestresult.LogoutResult;
 
 import java.util.UUID;
 

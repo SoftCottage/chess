@@ -3,7 +3,7 @@ package service;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
 import model.AuthData;
-import model.ClearResult;
+import requestresult.ClearResult;
 import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;

@@ -2,7 +2,7 @@ package handler;
 
 import com.google.gson.Gson;
 import io.javalin.http.Context;
-import model.*;
+import requestresult.*;
 import service.GameService;
 
 public class GameHandler {
@@ -68,14 +68,14 @@ public class GameHandler {
     public void joinGame(Context ctx) {
         try {
             String authToken = ctx.header("Authorization");
-            JoinGameModels.JoinGameRequest request = gson.fromJson(ctx.body(), JoinGameModels.JoinGameRequest.class);
+            JoinGameRequest request = gson.fromJson(ctx.body(), JoinGameRequest.class);
             if (request == null) {
-                ctx.status(400).result(gson.toJson(new JoinGameModels.JoinGameResult("Error: bad request")));
+                ctx.status(400).result(gson.toJson(new JoinGameResult("Error: bad request")));
                 return;
             }
 
             request.setAuthToken(authToken);
-            JoinGameModels.JoinGameResult result = gameService.joinGame(request);
+            JoinGameResult result = gameService.joinGame(request);
             String json = gson.toJson(result);
             ctx.contentType("application/json");
 
@@ -90,7 +90,7 @@ public class GameHandler {
             }
 
         } catch (Exception e) {
-            ctx.status(500).result(gson.toJson(new JoinGameModels.JoinGameResult("Error: " + e.getMessage())));
+            ctx.status(500).result(gson.toJson(new JoinGameResult("Error: " + e.getMessage())));
         }
     }
 }

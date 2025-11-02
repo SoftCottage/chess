@@ -1,4 +1,4 @@
-package model;
+package requestresult;
 
 public class LogoutRequest {
     private String authToken;

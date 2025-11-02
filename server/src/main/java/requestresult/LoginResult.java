@@ -1,25 +1,20 @@
-package model;
+package requestresult;
 
-public class RegisterResult {
+public class LoginResult {
     private String username;
     private String authToken;
     private String message;
 
-    public RegisterResult(String username, String authToken) {
+    public LoginResult(String username, String authToken) {
         this.username = username;
         this.authToken = authToken;
-        this.message = null;
     }
 
-    public RegisterResult(String message) {
+    public LoginResult(String message) {
         this.message = message;
     }
 
     public String getUsername() { return username; }
     public String getAuthToken() { return authToken; }
     public String getMessage() { return message; }
-
-    public boolean isSuccess() {
-        return message == null;
-    }
 }

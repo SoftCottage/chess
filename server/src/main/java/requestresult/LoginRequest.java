@@ -1,17 +1,16 @@
-package model;
+package requestresult;
 
-public class RegisterRequest {
+public class LoginRequest {
     private String username;
     private String password;
-    private String email;
 
-    public RegisterRequest(String username, String password, String email) {
+    public LoginRequest() {}
+
+    public LoginRequest(String username, String password) {
         this.username = username;
         this.password = password;
-        this.email = email;
     }
 
     public String getUsername() { return username; }
     public String getPassword() { return password; }
-    public String getEmail() { return email; }
 }

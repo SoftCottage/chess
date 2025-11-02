@@ -2,7 +2,7 @@ package service;
 
 import dataaccess.DataAccess;
 import dataaccess.DataAccessException;
-import model.ClearResult;
+import requestresult.ClearResult;
 
 public class ClearService {
 

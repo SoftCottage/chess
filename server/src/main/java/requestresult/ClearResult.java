@@ -1,4 +1,4 @@
-package model;
+package requestresult;
 
 public class ClearResult {
     private final String message;

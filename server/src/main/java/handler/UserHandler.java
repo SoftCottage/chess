@@ -2,13 +2,13 @@ package handler;
 
 import io.javalin.http.Context;
 import service.UserService;
-import model.RegisterRequest;
-import model.RegisterResult;
+import requestresult.RegisterRequest;
+import requestresult.RegisterResult;
 import com.google.gson.Gson;
-import model.LoginRequest;
-import model.LoginResult;
-import model.LogoutRequest;
-import model.LogoutResult;
+import requestresult.LoginRequest;
+import requestresult.LoginResult;
+import requestresult.LogoutRequest;
+import requestresult.LogoutResult;
 
 public class UserHandler {
 

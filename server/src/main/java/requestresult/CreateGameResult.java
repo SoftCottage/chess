@@ -1,5 +1,4 @@
-// CreateGameResult.java
-package model;
+package requestresult;
 
 public class CreateGameResult {
     private Integer gameID;
