@@ -8,7 +8,11 @@ import java.sql.ResultSet;
 import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 import java.sql.Connection;
+import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 
 public class MySqlDataAccess {
 
@@ -150,21 +154,102 @@ public class MySqlDataAccess {
 
     // Game Methods
     public int createGame(String gameName) throws DataAccessException {
-        // TODO: implement MySQL insert, return auto-increment ID
-        return -1;
+        if (gameName == null) {
+            throw new DataAccessException("Invalid game name");
+        }
+
+        String sql = "INSERT INTO games (game_name) VALUES (?)";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, gameName);
+            stmt.executeUpdate();
+
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // auto-increment ID
+                } else {
+                    throw new DataAccessException("Failed to retrieve game ID");
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to create game", ex);
+        }
     }
 
     public List<GameData> listGames() throws DataAccessException {
-        // TODO: implement MySQL select all
-        return List.of();
+        String sql = "SELECT game_id, white_username, black_username, game_name FROM games";
+
+        List<GameData> games = new ArrayList<>();
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                games.add(new GameData(
+                        rs.getInt("game_id"),
+                        rs.getString("white_username"),
+                        rs.getString("black_username"),
+                        rs.getString("game_name"),
+                        null // ChessGame object is null initially
+                ));
+            }
+
+            return games;
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to list games", ex);
+        }
     }
 
     public GameData getGameByID(int id) throws DataAccessException {
-        // TODO: implement MySQL select by ID
-        return null;
+        String sql = "SELECT game_id, white_username, black_username, game_name FROM games WHERE game_id = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new GameData(
+                            rs.getInt("game_id"),
+                            rs.getString("white_username"),
+                            rs.getString("black_username"),
+                            rs.getString("game_name"),
+                            null
+                    );
+                } else {
+                    return null; // game not found
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to get game by ID", ex);
+        }
     }
 
     public void updateGame(GameData game) throws DataAccessException {
-        // TODO: implement MySQL update
+        if (game == null) {
+            throw new DataAccessException("Invalid game");
+        }
+
+        String sql = "UPDATE games SET white_username = ?, black_username = ?, game_name = ? WHERE game_id = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, game.whiteUsername());
+            stmt.setString(2, game.blackUsername());
+            stmt.setString(3, game.gameName());
+            stmt.setInt(4, game.gameID());
+
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("Failed to update game", ex);
+        }
     }
+
+
+
 }
