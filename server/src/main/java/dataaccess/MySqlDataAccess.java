@@ -36,12 +36,6 @@ public class MySqlDataAccess {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        MySqlDataAccess dao = new MySqlDataAccess();
-        dao.createUser(new UserData("alice", "mypassword", "alice@mail.com"));
-        System.out.println("User created successfully");
-    }
-
     public UserData getUser(String username) throws DataAccessException {
         if (username == null) {
             throw new DataAccessException("Invalid username");
@@ -70,26 +64,88 @@ public class MySqlDataAccess {
         }
     }
 
-
-
-
     // Auth Methods
     public void createAuth(AuthData a) throws DataAccessException {
-        // TODO: implement MySQL insert
+        if (a == null || a.authToken() == null || a.username() == null) {
+            throw new DataAccessException("Invalid AuthData");
+        }
+
+        String sql = "INSERT INTO auths (auth_token, username) VALUES (?, ?)";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, a.authToken());
+            stmt.setString(2, a.username());
+
+            stmt.executeUpdate();
+        } catch (Exception ex) {
+            throw new DataAccessException("Failed to create auth", ex);
+        }
     }
 
     public AuthData getAuth(String token) throws DataAccessException {
-        // TODO: implement MySQL select
-        return null;
+        if (token == null) {
+            throw new DataAccessException("Invalid token");
+        }
+
+        String sql = "SELECT auth_token, username FROM auths WHERE auth_token = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, token);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new AuthData(
+                            rs.getString("auth_token"),
+                            rs.getString("username")
+                    );
+                } else {
+                    return null; // token not found
+                }
+            }
+        } catch (Exception ex) {
+            throw new DataAccessException("Failed to get auth", ex);
+        }
     }
 
     public void deleteAuth(String token) throws DataAccessException {
-        // TODO: implement MySQL delete
+        if (token == null) {
+            throw new DataAccessException("Invalid token");
+        }
+
+        String sql = "DELETE FROM auths WHERE auth_token = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, token);
+            stmt.executeUpdate();
+        } catch (Exception ex) {
+            throw new DataAccessException("Failed to delete auth", ex);
+        }
     }
 
     public boolean isValidAuthToken(String token) throws DataAccessException {
-        // TODO: implement MySQL check
-        return false;
+        if (token == null) {
+            return false;
+        }
+
+        String sql = "SELECT 1 FROM auths WHERE auth_token = ?";
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, token);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception ex) {
+            throw new DataAccessException("Failed to validate auth token", ex);
+        }
     }
 
     // Game Methods
