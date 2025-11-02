@@ -9,17 +9,17 @@ public class DatabaseManager {
     private static String dbPassword;
     private static String connectionUrl;
 
-    /*
-     * Load the database information for the db.properties file.
-     */
     static {
         loadPropertiesFromResources();
     }
 
-    /**
-     * Creates the database if it does not already exist.
-     */
-    static public void createDatabase() throws DataAccessException {
+    public static void initialize() throws DataAccessException {
+        createDatabase();
+        createTables();
+        System.out.println("Database initialized.");
+    }
+
+    public static void createDatabase() throws DataAccessException {
         var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
         try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
              var preparedStatement = conn.prepareStatement(statement)) {
@@ -29,21 +29,52 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Create a connection to the database and sets the catalog based upon the
-     * properties specified in db.properties. Connections to the database should
-     * be short-lived, and you must close the connection when you are done with it.
-     * The easiest way to do that is with a try-with-resource block.
-     * <br/>
-     * <code>
-     * try (var conn = DatabaseManager.getConnection()) {
-     * // execute SQL statements.
-     * }
-     * </code>
-     */
+    private static void createTables() throws DataAccessException {
+        try (var conn = getConnection();
+             var stmt = conn.createStatement()) {
+
+            var createUsers = """
+                CREATE TABLE IF NOT EXISTS users (
+                    username VARCHAR(50) NOT NULL PRIMARY KEY,
+                    password VARCHAR(255) NOT NULL,
+                    email VARCHAR(100)
+                );
+            """;
+
+            var createAuth = """
+                CREATE TABLE IF NOT EXISTS auth (
+                    authToken VARCHAR(255) NOT NULL PRIMARY KEY,
+                    username VARCHAR(50) NOT NULL,
+                    FOREIGN KEY (username) REFERENCES users(username)
+                        ON DELETE CASCADE
+                );
+            """;
+
+            var createGames = """
+                CREATE TABLE IF NOT EXISTS games (
+                    gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                    whiteUsername VARCHAR(50),
+                    blackUsername VARCHAR(50),
+                    gameName VARCHAR(100) NOT NULL,
+                    game TEXT,
+                    FOREIGN KEY (whiteUsername) REFERENCES users(username)
+                        ON DELETE SET NULL,
+                    FOREIGN KEY (blackUsername) REFERENCES users(username)
+                        ON DELETE SET NULL
+                );
+            """;
+
+            stmt.executeUpdate(createUsers);
+            stmt.executeUpdate(createAuth);
+            stmt.executeUpdate(createGames);
+
+        } catch (SQLException ex) {
+            throw new DataAccessException("failed to create tables", ex);
+        }
+    }
+
     static Connection getConnection() throws DataAccessException {
         try {
-            //do not wrap the following line with a try-with-resources
             var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
             conn.setCatalog(databaseName);
             return conn;
