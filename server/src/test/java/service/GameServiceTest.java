@@ -1,6 +1,6 @@
 package service;
 
-import dataaccess.DataAccess;
+import dataaccess.InMemoryDataAccess;
 import dataaccess.DataAccessException;
 import model.*;
 import org.junit.jupiter.api.*;
@@ -11,20 +11,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GameServiceTest {
 
-    private static DataAccess dataAccess;
+    private static InMemoryDataAccess inMemoryDataAccess;
     private static GameService gameService;
     private static UserService userService;
 
     @BeforeAll
     public static void setup() {
-        dataAccess = new DataAccess();
-        gameService = new GameService(dataAccess);
-        userService = new UserService(dataAccess);
+        inMemoryDataAccess = new InMemoryDataAccess();
+        gameService = new GameService(inMemoryDataAccess);
+        userService = new UserService(inMemoryDataAccess);
     }
 
     @BeforeEach
     public void beforeEach() throws DataAccessException {
-        dataAccess.clearDatabase();
+        inMemoryDataAccess.clearDatabase();
     }
 
     // Create Game Tests

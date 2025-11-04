@@ -4,80 +4,34 @@ import model.UserData;
 import model.GameData;
 import model.AuthData;
 
-import java.util.*;
+import java.util.List;
 
-public class DataAccess {
-    private final Map<String, UserData> users = new HashMap<>();
-    private final Map<Integer, GameData> games = new HashMap<>();
-    private final Map<String, AuthData> auths = new HashMap<>();
-    private int nextGameID = 1;
+public interface DataAccess {
 
-    public void clearDatabase() throws DataAccessException {
-        try {
-            users.clear();
-            games.clear();
-            auths.clear();
-            nextGameID = 1;
-        } catch (Exception ex) {
-            throw new DataAccessException("Error clearing database", ex);
-        }
-    }
+    // User methods
+    void createUser(UserData u) throws DataAccessException;
 
-    // User Methods
-    public void createUser(UserData u) throws DataAccessException {
-        if (u == null || u.username() == null) throw new DataAccessException("Invalid user");
-        users.put(u.username(), u);
-    }
+    UserData getUser(String username) throws DataAccessException;
 
-    public UserData getUser(String username) throws DataAccessException {
-        UserData u = users.get(username);
-        if (u == null) throw new DataAccessException("User not found");
-        return u;
-    }
+    // Auth methods
+    void createAuth(AuthData a) throws DataAccessException;
 
-    // Auth Methods
-    public void createAuth(AuthData a) throws DataAccessException {
-        if (a == null || a.authToken() == null) throw new DataAccessException("Invalid auth");
-        auths.put(a.authToken(), a);
-    }
+    AuthData getAuth(String token) throws DataAccessException;
 
-    public AuthData getAuth(String token) throws DataAccessException {
-        AuthData a = auths.get(token);
-        if (a == null) throw new DataAccessException("Auth not found");
-        return a;
-    }
+    void deleteAuth(String token) throws DataAccessException;
 
-    public void deleteAuth(String token) throws DataAccessException {
-        if (token == null || !auths.containsKey(token)) {
-            throw new DataAccessException("Auth not found");
-        }
-        auths.remove(token);
-    }
+    boolean isValidAuthToken(String token);
 
-    public boolean isValidAuthToken(String token) {
-        return auths.containsKey(token);
-    }
+    // Game methods
+    int createGame(String gameName) throws DataAccessException;
 
-    // Game Methods
-    public int createGame(String gameName) throws DataAccessException {
-        if (gameName == null) throw new DataAccessException("Invalid game name");
-        int id = nextGameID++;
-        games.put(id, new GameData(id, null, null, gameName, null));
-        return id;
-    }
+    List<GameData> listGames() throws DataAccessException;
 
-    public List<GameData> listGames() {
-        return new ArrayList<>(games.values());
-    }
+    GameData getGameByID(int id) throws DataAccessException;
 
-    public GameData getGameByID(int id) {
-        return games.get(id);
-    }
+    void updateGame(GameData game) throws DataAccessException;
 
-    public void updateGame(GameData game) {
-        if (game != null) {
-            games.put(game.gameID(), game);
-        }
-    }
+    // Optional utility
+    void clearDatabase() throws DataAccessException;
 
 }

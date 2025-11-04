@@ -1,19 +1,19 @@
 package service;
 
-import dataaccess.DataAccess;
+import dataaccess.InMemoryDataAccess;
 import dataaccess.DataAccessException;
 import requestresult.ClearResult;
 
 public class ClearService {
 
-    private final DataAccess dataAccess;
+    private final InMemoryDataAccess inMemoryDataAccess;
 
-    public ClearService(DataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+    public ClearService(InMemoryDataAccess inMemoryDataAccess) {
+        this.inMemoryDataAccess = inMemoryDataAccess;
     }
 
     public ClearResult clear() throws DataAccessException {
-        dataAccess.clearDatabase();
+        inMemoryDataAccess.clearDatabase();
         return new ClearResult("Clear succeeded");
     }
 }

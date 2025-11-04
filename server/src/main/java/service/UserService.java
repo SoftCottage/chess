@@ -1,6 +1,6 @@
 package service;
 //comment to commit and push
-import dataaccess.DataAccess;
+import dataaccess.InMemoryDataAccess;
 import dataaccess.DataAccessException;
 import model.UserData;
 import model.AuthData;
@@ -15,10 +15,10 @@ import java.util.UUID;
 
 public class UserService {
 
-    private final DataAccess dataAccess;
+    private final InMemoryDataAccess inMemoryDataAccess;
 
-    public UserService(DataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+    public UserService(InMemoryDataAccess inMemoryDataAccess) {
+        this.inMemoryDataAccess = inMemoryDataAccess;
     }
 
     /**
@@ -32,14 +32,14 @@ public class UserService {
                 return new RegisterResult("Error: bad request");
             }
             try {
-                dataAccess.getUser(request.getUsername());
+                inMemoryDataAccess.getUser(request.getUsername());
                 return new RegisterResult("Error: already taken");
             } catch (DataAccessException ignored) {
             }
             UserData newUser = new UserData(request.getUsername(), request.getPassword(), request.getEmail());
-            dataAccess.createUser(newUser);
+            inMemoryDataAccess.createUser(newUser);
             String token = UUID.randomUUID().toString();
-            dataAccess.createAuth(new AuthData(token, request.getUsername()));
+            inMemoryDataAccess.createAuth(new AuthData(token, request.getUsername()));
             return new RegisterResult(request.getUsername(), token);
         } catch (DataAccessException e) {
             return new RegisterResult("Error: database failure - " + e.getMessage());
@@ -53,12 +53,12 @@ public class UserService {
             if (request.getUsername() == null || request.getPassword() == null) {
                 return new LoginResult("Error: bad request");
             }
-            UserData user = dataAccess.getUser(request.getUsername());
+            UserData user = inMemoryDataAccess.getUser(request.getUsername());
             if (!user.password().equals(request.getPassword())) {
                 return new LoginResult("Error: unauthorized");
             }
             String token = UUID.randomUUID().toString();
-            dataAccess.createAuth(new AuthData(token, request.getUsername()));
+            inMemoryDataAccess.createAuth(new AuthData(token, request.getUsername()));
             return new LoginResult(request.getUsername(), token);
         } catch (DataAccessException e) {
             if (e.getMessage().contains("not found")) {
@@ -75,7 +75,7 @@ public class UserService {
             if (request.getAuthToken() == null) {
                 return new LogoutResult("Error: bad request");
             }
-            dataAccess.deleteAuth(request.getAuthToken());
+            inMemoryDataAccess.deleteAuth(request.getAuthToken());
             return new LogoutResult(null);
         } catch (DataAccessException e) {
             if (e.getMessage().contains("Auth not found")) {

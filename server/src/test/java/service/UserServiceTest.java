@@ -1,6 +1,6 @@
 package service;
 
-import dataaccess.DataAccess;
+import dataaccess.InMemoryDataAccess;
 import dataaccess.DataAccessException;
 import model.*;
 import org.junit.jupiter.api.*;
@@ -11,18 +11,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserServiceTest {
 
-    private static DataAccess dataAccess;
+    private static InMemoryDataAccess inMemoryDataAccess;
     private static UserService userService;
 
     @BeforeAll
     public static void setup() {
-        dataAccess = new DataAccess();
-        userService = new UserService(dataAccess);
+        inMemoryDataAccess = new InMemoryDataAccess();
+        userService = new UserService(inMemoryDataAccess);
     }
 
     @BeforeEach
     public void beforeEach() throws DataAccessException {
-        dataAccess.clearDatabase();
+        inMemoryDataAccess.clearDatabase();
     }
 
     // Register Tests
@@ -56,7 +56,7 @@ public class UserServiceTest {
     @Order(3)
     @DisplayName("Register duplicate username")
     public void registerDuplicate() throws DataAccessException {
-        dataAccess.createUser(new UserData("bob", "pw", "b@mail.com"));
+        inMemoryDataAccess.createUser(new UserData("bob", "pw", "b@mail.com"));
 
         RegisterRequest req = new RegisterRequest("bob", "pw2", "b2@mail.com");
         RegisterResult res = userService.register(req);

@@ -1,6 +1,6 @@
 package service;
 
-import dataaccess.DataAccess;
+import dataaccess.InMemoryDataAccess;
 import dataaccess.DataAccessException;
 import model.*;
 import requestresult.*;
@@ -8,10 +8,10 @@ import requestresult.*;
 import java.util.List;
 
 public class GameService {
-    private final DataAccess dataAccess;
+    private final InMemoryDataAccess inMemoryDataAccess;
 
-    public GameService(DataAccess dataAccess) {
-        this.dataAccess = dataAccess;
+    public GameService(InMemoryDataAccess inMemoryDataAccess) {
+        this.inMemoryDataAccess = inMemoryDataAccess;
     }
 
     // Create Game
@@ -21,10 +21,10 @@ public class GameService {
                 return new CreateGameResult("Error: bad request");
             }
 
-            AuthData auth = dataAccess.getAuth(request.getAuthToken());
+            AuthData auth = inMemoryDataAccess.getAuth(request.getAuthToken());
             if (auth == null) return new CreateGameResult("Error: unauthorized");
 
-            int gameID = dataAccess.createGame(request.getGameName());
+            int gameID = inMemoryDataAccess.createGame(request.getGameName());
             return new CreateGameResult(gameID);
 
         } catch (DataAccessException e) {
@@ -42,11 +42,11 @@ public class GameService {
                 return new ListGamesResult("Error: unauthorized");
             }
 
-            if (!dataAccess.isValidAuthToken(request.getAuthToken())) {
+            if (!inMemoryDataAccess.isValidAuthToken(request.getAuthToken())) {
                 return new ListGamesResult("Error: unauthorized");
             }
 
-            List<GameData> games = dataAccess.listGames();
+            List<GameData> games = inMemoryDataAccess.listGames();
             return new ListGamesResult(games);
 
         } catch (Exception e) {
@@ -64,10 +64,10 @@ public class GameService {
                 return new JoinGameResult("Error: bad request");
             }
 
-            AuthData auth = dataAccess.getAuth(request.getAuthToken());
+            AuthData auth = inMemoryDataAccess.getAuth(request.getAuthToken());
             if (auth == null) return new JoinGameResult("Error: unauthorized");
 
-            GameData game = dataAccess.getGameByID(request.getGameID());
+            GameData game = inMemoryDataAccess.getGameByID(request.getGameID());
             if (game == null) return new JoinGameResult("Error: bad request");
 
             String color = request.getPlayerColor().toUpperCase();
@@ -82,7 +82,7 @@ public class GameService {
                 return new JoinGameResult("Error: bad request");
             }
 
-            dataAccess.updateGame(game);
+            inMemoryDataAccess.updateGame(game);
 
             return new JoinGameResult();
 

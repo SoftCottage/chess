@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class GameDataAccessTests {
+public class GameInMemoryDataAccessTests {
 
     private static MySqlDataAccess dao;
 

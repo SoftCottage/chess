@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.UUID;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthDataAccessTests {
+public class AuthInMemoryDataAccessTests {
 
     private static MySqlDataAccess dao;
 
