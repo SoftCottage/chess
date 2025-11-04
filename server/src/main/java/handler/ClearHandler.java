@@ -23,7 +23,7 @@ public class ClearHandler {
             ClearResult result = clearService.clear();
             ctx.status(200).result(gson.toJson(result));
         } catch (DataAccessException e) {
-            ctx.status(500).json(Map.of("message", "Error: " + e.getMessage()));
+            ctx.status(500).result(gson.toJson(Map.of("message", "Error: " + e.getMessage())));
         }
     }
 }

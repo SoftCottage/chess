@@ -18,9 +18,9 @@ public class MySqlDataAccess implements DataAccess {
     public void clearDatabase() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             try (Statement stmt = conn.createStatement()) {
+                stmt.executeUpdate("DELETE FROM Games");
                 stmt.executeUpdate("DELETE FROM Auths");
                 stmt.executeUpdate("DELETE FROM Users");
-                stmt.executeUpdate("DELETE FROM Games");
             }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to clear database", e);
