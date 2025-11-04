@@ -1,47 +1,53 @@
 package dataaccess;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SchemaInitializer {
 
-    public static void ensureTablesExist() throws DataAccessException {
-        try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement()) {
+    /**
+     * Initialize the database schema. Creates tables if they do not exist.
+     */
+    public static void initialize(Connection connection) throws DataAccessException {
+        try (Statement stmt = connection.createStatement()) {
 
-            // USERS table
-            stmt.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS users (
-                    username VARCHAR(50) PRIMARY KEY,
-                    password_hash VARCHAR(60) NOT NULL,
-                    email VARCHAR(100) NOT NULL
-                )
-            """);
+            // Users table
+            String createUsers = """
+                    CREATE TABLE IF NOT EXISTS Users (
+                        username VARCHAR(255) PRIMARY KEY,
+                        password VARCHAR(255) NOT NULL,
+                        email VARCHAR(255) UNIQUE
+                    );
+                    """;
+            stmt.execute(createUsers);
 
-            // AUTHS table
-            stmt.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS auths (
-                    authToken VARCHAR(64) PRIMARY KEY,
-                    username VARCHAR(50) NOT NULL,
-                    FOREIGN KEY (username) REFERENCES users(username)
-                )
-            """);
+            // Auth table
+            String createAuth = """
+                    CREATE TABLE IF NOT EXISTS Auths (
+                        auth_token CHAR(36) PRIMARY KEY,
+                        username VARCHAR(255) NOT NULL,
+                        FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
+                    );
+                    """;
+            stmt.execute(createAuth);
 
-            // GAMES table
-            stmt.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS games (
-                    gameID INT AUTO_INCREMENT PRIMARY KEY,
-                    whiteUsername VARCHAR(50),
-                    blackUsername VARCHAR(50),
-                    gameName VARCHAR(100) NOT NULL,
-                    gameState JSON,
-                    FOREIGN KEY (whiteUsername) REFERENCES users(username),
-                    FOREIGN KEY (blackUsername) REFERENCES users(username)
-                )
-            """);
+            // Games table
+            String createGames = """
+                    CREATE TABLE IF NOT EXISTS Games (
+                        game_id INT AUTO_INCREMENT PRIMARY KEY,
+                        white_username VARCHAR(255),
+                        black_username VARCHAR(255),
+                        game_name VARCHAR(255),
+                        game_state TEXT,
+                        FOREIGN KEY (white_username) REFERENCES Users(username),
+                        FOREIGN KEY (black_username) REFERENCES Users(username)
+                    );
+                    """;
+            stmt.execute(createGames);
 
-        } catch (Exception ex) {
-            throw new DataAccessException("Failed to create tables", ex);
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to initialize database schema", e);
         }
     }
 }

@@ -9,39 +9,41 @@ import service.UserService;
 import service.GameService;
 import dataaccess.*;
 
+import java.sql.SQLException;
+
 public class Server {
 
     private final Javalin javalin;
-    private final InMemoryDataAccess inMemoryDataAccess;
+    private final DataAccess dataAccess;
 
     public Server() {
         // Initialize database and create tables if needed
         try {
-            DatabaseManager.createDatabase();
-            DatabaseManager.initialize(); // This method will create tables if they don't exist
-        } catch (DataAccessException e) {
+            DatabaseManager.createDatabase();  // create database if not exists
+            DatabaseManager.initialize();      // create tables if not exists
+        } catch (DataAccessException | SQLException e) {
             throw new RuntimeException("Failed to initialize database: " + e.getMessage(), e);
         }
 
+        // Use MySQL persistence instead of in-memory
+        dataAccess = new MySqlDataAccess();
+
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
-        // Initialize DataAccess layer (you can replace this with MySqlDataAccess)
-        inMemoryDataAccess = new InMemoryDataAccess();
-
         // Clear endpoint
-        var clearService = new ClearService(inMemoryDataAccess);
+        var clearService = new ClearService(dataAccess);
         var clearHandler = new ClearHandler(clearService);
         javalin.delete("/db", clearHandler::handle);
 
         // User endpoints
-        var userService = new UserService(inMemoryDataAccess);
+        var userService = new UserService(dataAccess);
         var userHandler = new UserHandler(userService);
         javalin.post("/user", userHandler::handleRegister);
         javalin.post("/session", userHandler::handleLogin);
         javalin.delete("/session", userHandler::handleLogout);
 
         // Game endpoints
-        var gameService = new GameService(inMemoryDataAccess);
+        var gameService = new GameService(dataAccess);
         var gameHandler = new GameHandler(gameService);
         javalin.post("/game", gameHandler::createGame);
         javalin.get("/game", gameHandler::listGames);
