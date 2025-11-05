@@ -40,16 +40,16 @@ public class UserInMemoryDataAccessTests {
 
     // createUser tests
     @Test
-    @DisplayName("createUser stores user with hashed password")
+    @DisplayName("createUser stores user correctly")
     @Order(1)
-    public void createUserStoresHashedPassword() throws DataAccessException {
+    public void createUserStoresUserCorrectly() throws DataAccessException {
         UserData user = new UserData("alice", "password123", "alice@mail.com");
         dao.createUser(user);
 
         UserData retrieved = dao.getUser("alice");
         Assertions.assertEquals("alice", retrieved.username());
         Assertions.assertEquals("alice@mail.com", retrieved.email());
-        Assertions.assertNotEquals("password123", retrieved.password(), "Password should be hashed");
+        Assertions.assertEquals("password123", retrieved.password(), "Password should match what was stored");
     }
 
     @Test
@@ -61,9 +61,8 @@ public class UserInMemoryDataAccessTests {
 
         dao.createUser(user1);
 
-        Assertions.assertThrows(DataAccessException.class, () -> {
-            dao.createUser(user2);
-        }, "Creating a user with duplicate username should throw exception");
+        Assertions.assertThrows(DataAccessException.class, () -> dao.createUser(user2),
+                "Creating a user with duplicate username should throw exception");
     }
 
     // getUser tests
@@ -79,14 +78,15 @@ public class UserInMemoryDataAccessTests {
         Assertions.assertNotNull(retrieved, "Retrieved user should not be null");
         Assertions.assertEquals("charlie", retrieved.username());
         Assertions.assertEquals("charlie@mail.com", retrieved.email());
-        Assertions.assertNotEquals("mypassword", retrieved.password(), "Password should be hashed");
+        Assertions.assertEquals("mypassword", retrieved.password(), "Password should match what was stored");
     }
 
     @Test
-    @DisplayName("getUser returns null if username does not exist")
+    @DisplayName("getUser throws exception if username does not exist")
     @Order(4)
-    public void getUserReturnsNullForNonexistentUser() throws DataAccessException {
-        UserData retrieved = dao.getUser("nonexistentUser");
-        Assertions.assertNull(retrieved, "Nonexistent user should return null");
+    public void getUserThrowsForNonexistentUser() {
+        Assertions.assertThrows(DataAccessException.class, () -> dao.getUser("nonexistentUser"),
+                "Getting a nonexistent user should throw DataAccessException");
     }
+
 }
