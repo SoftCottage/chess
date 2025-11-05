@@ -54,7 +54,6 @@ public class GameService {
         }
     }
 
-    // Join Game
     public JoinGameResult joinGame(JoinGameRequest request) {
         try {
             if (request == null
@@ -70,8 +69,20 @@ public class GameService {
             GameData game = dataAccess.getGameByID(request.getGameID());
             if (game == null) return new JoinGameResult("Error: bad request");
 
-            String color = request.getPlayerColor(); // Keep string as-is
+            String color = request.getPlayerColor(); // original string
 
+            // --- New: handle "WHITE/BLACK" ---
+            if ("WHITE/BLACK".equalsIgnoreCase(color)) {
+                if (game.whiteUsername() == null) {
+                    color = "WHITE";
+                } else if (game.blackUsername() == null) {
+                    color = "BLACK";
+                } else {
+                    return new JoinGameResult("Error: game full");
+                }
+            }
+
+            // Assign color
             if (color.equalsIgnoreCase("WHITE")) {
                 if (game.whiteUsername() != null) return new JoinGameResult("Error: already taken");
                 game = game.withWhiteUsername(auth.username());
@@ -93,4 +104,5 @@ public class GameService {
             return new JoinGameResult("Error: unexpected failure - " + e.getMessage());
         }
     }
+
 }
