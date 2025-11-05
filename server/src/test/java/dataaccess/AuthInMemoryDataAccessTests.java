@@ -83,14 +83,15 @@ public class AuthInMemoryDataAccessTests {
     }
 
     @Test
-    @DisplayName("getAuth returns null for nonexistent token")
+    @DisplayName("getAuth throws DataAccessException for nonexistent token")
     @Order(4)
-    public void getAuthReturnsNullForNonexistentToken() throws DataAccessException {
-        AuthData retrieved = dao.getAuth("nonexistentToken");
-        Assertions.assertNull(retrieved, "Nonexistent token should return null");
+    public void getAuthThrowsForNonexistentToken() {
+        DataAccessException ex = Assertions.assertThrows(DataAccessException.class, () -> {
+            dao.getAuth("nonexistentToken");
+        });
+        Assertions.assertEquals("Auth not found", ex.getMessage(), "Nonexistent token should throw exception");
     }
 
-    // deleteAuth tests
     @Test
     @DisplayName("deleteAuth removes existing token")
     @Order(5)
@@ -100,17 +101,22 @@ public class AuthInMemoryDataAccessTests {
 
         dao.deleteAuth(auth.authToken());
 
-        AuthData retrieved = dao.getAuth(auth.authToken());
-        Assertions.assertNull(retrieved, "Auth token should be deleted");
+        DataAccessException ex = Assertions.assertThrows(DataAccessException.class, () -> {
+            dao.getAuth(auth.authToken());
+        });
+        Assertions.assertEquals("Auth not found", ex.getMessage(), "Deleted auth token should not be retrievable");
     }
 
     @Test
-    @DisplayName("deleteAuth does nothing for nonexistent token")
+    @DisplayName("deleteAuth throws exception for nonexistent token")
     @Order(6)
-    public void deleteAuthDoesNothingForNonexistentToken() throws DataAccessException {
-        Assertions.assertDoesNotThrow(() -> dao.deleteAuth("nonexistentToken"),
-                "Deleting a nonexistent token should not throw exception");
+    public void deleteAuthThrowsForNonexistentToken() {
+        DataAccessException ex = Assertions.assertThrows(DataAccessException.class, () -> {
+            dao.deleteAuth("nonexistentToken");
+        });
+        Assertions.assertEquals("Auth not found", ex.getMessage(), "Deleting nonexistent token should throw exception");
     }
+
 
     // isValidAuthToken tests
     @Test
