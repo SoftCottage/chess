@@ -18,10 +18,10 @@ public class GameDataAccessTests {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            stmt.executeUpdate("DROP TABLE IF EXISTS Games");
+            stmt.executeUpdate("DROP TABLE IF EXISTS games");
 
             stmt.executeUpdate("""
-            CREATE TABLE Games (
+            CREATE TABLE games (
                 game_id INT AUTO_INCREMENT PRIMARY KEY,
                 white_username VARCHAR(50),
                 black_username VARCHAR(50),

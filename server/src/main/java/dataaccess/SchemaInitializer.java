@@ -11,7 +11,7 @@ public class SchemaInitializer {
 
             // Users table
             String createUsers = """
-                    CREATE TABLE IF NOT EXISTS Users (
+                    CREATE TABLE IF NOT EXISTS users (
                         username VARCHAR(255) PRIMARY KEY,
                         password_hash VARCHAR(255) NOT NULL,
                         email VARCHAR(255) UNIQUE
@@ -21,7 +21,7 @@ public class SchemaInitializer {
 
             // Auths table
             String createAuth = """
-                    CREATE TABLE IF NOT EXISTS Auths (
+                    CREATE TABLE IF NOT EXISTS auths (
                         auth_token CHAR(36) PRIMARY KEY,
                         username VARCHAR(255) NOT NULL,
                         FOREIGN KEY (username) REFERENCES Users(username) ON DELETE CASCADE
@@ -31,7 +31,7 @@ public class SchemaInitializer {
 
             // Games table
             String createGames = """
-                    CREATE TABLE IF NOT EXISTS Games (
+                    CREATE TABLE IF NOT EXISTS games (
                         game_id INT AUTO_INCREMENT PRIMARY KEY,
                         white_username VARCHAR(255),
                         black_username VARCHAR(255),

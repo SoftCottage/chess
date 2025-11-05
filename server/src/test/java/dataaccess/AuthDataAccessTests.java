@@ -115,7 +115,6 @@ public class AuthDataAccessTests {
         Assertions.assertEquals("Auth not found", ex.getMessage(), "Deleting nonexistent token should throw exception");
     }
 
-
     // isValidAuthToken tests
     @Test
     @DisplayName("isValidAuthToken returns true for existing token")
