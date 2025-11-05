@@ -61,10 +61,13 @@ public class ChessPiece {
 
     private Collection<ChessMove> slidingMoves(ChessBoard board, ChessPosition pos, int[][] directions) {
         List<ChessMove> moves = new ArrayList<>();
-        int row = pos.getRow(), col = pos.getColumn();
+        int row = pos.getRow();
+        int col = pos.getColumn();
 
         for (int[] dir : directions) {
-            int r = row + dir[0], c = col + dir[1];
+            int r = row + dir[0];
+            int c = col + dir[1];
+
             while (board.inBounds(r, c)) {
                 ChessPosition next = new ChessPosition(r, c);
                 ChessPiece target = board.getPiece(next);
@@ -72,8 +75,9 @@ public class ChessPiece {
                 if (target == null) {
                     moves.add(new ChessMove(pos, next, null));
                 } else {
-                    if (target.getTeamColor() != pieceColor)
+                    if (target.getTeamColor() != pieceColor) {
                         moves.add(new ChessMove(pos, next, null));
+                    }
                     break;
                 }
                 r += dir[0];
@@ -83,13 +87,16 @@ public class ChessPiece {
         return moves;
     }
 
+
     private Collection<ChessMove> stepMoves(ChessBoard board, ChessPosition pos, int[][] directions) {
         List<ChessMove> moves = new ArrayList<>();
         int row = pos.getRow(), col = pos.getColumn();
 
         for (int[] dir : directions) {
             int r = row + dir[0], c = col + dir[1];
-            if (!board.inBounds(r, c)) continue;
+            if (!board.inBounds(r, c)) {
+                continue;
+            }
 
             ChessPosition next = new ChessPosition(r, c);
             ChessPiece target = board.getPiece(next);
