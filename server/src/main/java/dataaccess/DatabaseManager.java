@@ -29,8 +29,7 @@ public class DatabaseManager {
                 }
                 Properties props = new Properties();
                 props.load(input);
-                dbProperties = props;
-                initialized = true;
+                loadProperties(props);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to load db.properties: " + e.getMessage(), e);
             }

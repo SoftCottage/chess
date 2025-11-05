@@ -22,7 +22,9 @@ public class GameService {
             }
 
             AuthData auth = dataAccess.getAuth(request.getAuthToken());
-            if (auth == null) return new CreateGameResult("Error: unauthorized");
+            if (auth == null) {
+                return new CreateGameResult("Error: unauthorized");
+            }
 
             int gameID = dataAccess.createGame(request.getGameName());
             return new CreateGameResult(gameID);
@@ -64,10 +66,14 @@ public class GameService {
             }
 
             AuthData auth = dataAccess.getAuth(request.getAuthToken());
-            if (auth == null) return new JoinGameResult("Error: unauthorized");
+            if (auth == null) {
+                return new JoinGameResult("Error: unauthorized");
+            }
 
             GameData game = dataAccess.getGameByID(request.getGameID());
-            if (game == null) return new JoinGameResult("Error: bad request");
+            if (game == null) {
+                return new JoinGameResult("Error: bad request");
+            }
 
             String color = request.getPlayerColor();
 
@@ -84,10 +90,14 @@ public class GameService {
 
             // Assign color
             if (color.equalsIgnoreCase("WHITE")) {
-                if (game.whiteUsername() != null) return new JoinGameResult("Error: already taken");
+                if (game.whiteUsername() != null) {
+                    return new JoinGameResult("Error: already taken");
+                }
                 game = game.withWhiteUsername(auth.username());
             } else if (color.equalsIgnoreCase("BLACK")) {
-                if (game.blackUsername() != null) return new JoinGameResult("Error: already taken");
+                if (game.blackUsername() != null) {
+                    return new JoinGameResult("Error: already taken");
+                }
                 game = game.withBlackUsername(auth.username());
             } else {
                 return new JoinGameResult("Error: bad request");

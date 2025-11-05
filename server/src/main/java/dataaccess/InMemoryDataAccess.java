@@ -26,27 +26,35 @@ public class InMemoryDataAccess implements DataAccess {
 
     @Override
     public void createUser(UserData u) throws DataAccessException {
-        if (u == null || u.username() == null) throw new DataAccessException("Invalid user");
+        if (u == null || u.username() == null) {
+            throw new DataAccessException("Invalid user");
+        }
         users.put(u.username(), u);
     }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
         UserData u = users.get(username);
-        if (u == null) throw new DataAccessException("User not found");
+        if (u == null) {
+            throw new DataAccessException("User not found");
+        }
         return u;
     }
 
     @Override
     public void createAuth(AuthData a) throws DataAccessException {
-        if (a == null || a.authToken() == null) throw new DataAccessException("Invalid auth");
+        if (a == null || a.authToken() == null) {
+            throw new DataAccessException("Invalid auth");
+        }
         auths.put(a.authToken(), a);
     }
 
     @Override
     public AuthData getAuth(String token) throws DataAccessException {
         AuthData a = auths.get(token);
-        if (a == null) throw new DataAccessException("Auth not found");
+        if (a == null) {
+            throw new DataAccessException("Auth not found");
+        }
         return a;
     }
 
@@ -65,7 +73,9 @@ public class InMemoryDataAccess implements DataAccess {
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
-        if (gameName == null) throw new DataAccessException("Invalid game name");
+        if (gameName == null) {
+            throw new DataAccessException("Invalid game name");
+        }
         int id = nextGameID++;
         games.put(id, new GameData(id, null, null, gameName, null));
         return id;

@@ -28,17 +28,7 @@ public class UserHandler {
 
             String jsonResult = gson.toJson(result);
 
-            if (result.getMessage() != null) {
-                if (result.getMessage().contains("bad request")) {
-                    ctx.status(400).result(jsonResult);
-                } else if (result.getMessage().contains("already taken")) {
-                    ctx.status(403).result(jsonResult);
-                } else {
-                    ctx.status(500).result(jsonResult);
-                }
-            } else {
-                ctx.status(200).result(jsonResult);
-            }
+            extracted(result.getMessage(), ctx, jsonResult, "already taken", 403);
 
         } catch (Exception e) {
             String errorJson = gson.toJson(new RegisterResult("Error: " + e.getMessage()));
@@ -55,21 +45,25 @@ public class UserHandler {
             String json = gson.toJson(result);
             ctx.contentType("application/json");
 
-            if (result.getMessage() != null) {
-                if (result.getMessage().contains("bad request")) {
-                    ctx.status(400).result(json);
-                } else if (result.getMessage().contains("unauthorized")) {
-                    ctx.status(401).result(json);
-                } else {
-                    ctx.status(500).result(json);
-                }
-            } else {
-                ctx.status(200).result(json);
-            }
+            extracted(result.getMessage(), ctx, json, "unauthorized", 401);
 
         } catch (Exception e) {
             String errorJson = gson.toJson(new LoginResult("Error: " + e.getMessage()));
             ctx.status(500).result(errorJson);
+        }
+    }
+
+    private static void extracted(String result, Context ctx, String json, String unauthorized, int status) {
+        if (result != null) {
+            if (result.contains("bad request")) {
+                ctx.status(400).result(json);
+            } else if (result.contains(unauthorized)) {
+                ctx.status(status).result(json);
+            } else {
+                ctx.status(500).result(json);
+            }
+        } else {
+            ctx.status(200).result(json);
         }
     }
 
@@ -92,22 +86,11 @@ public class UserHandler {
             String json = gson.toJson(result);
             ctx.contentType("application/json");
 
-            if (result.getMessage() != null) {
-                if (result.getMessage().contains("bad request")) {
-                    ctx.status(400).result(json);
-                } else if (result.getMessage().contains("unauthorized")) {
-                    ctx.status(401).result(json);
-                } else {
-                    ctx.status(500).result(json);
-                }
-            } else {
-                ctx.status(200).result(json);
-            }
+            extracted(result.getMessage(), ctx, json, "unauthorized", 401);
 
         } catch (Exception e) {
             String errorJson = gson.toJson(new LogoutResult("Error: " + e.getMessage()));
             ctx.status(500).result(errorJson);
         }
     }
-
 }

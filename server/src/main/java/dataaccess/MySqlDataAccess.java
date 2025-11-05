@@ -29,7 +29,9 @@ public class MySqlDataAccess implements DataAccess {
 
     @Override
     public void createUser(UserData u) throws DataAccessException {
-        if (u == null || u.username() == null) throw new DataAccessException("Invalid user");
+        if (u == null || u.username() == null) {
+            throw new DataAccessException("Invalid user");
+        }
         String sql = "INSERT INTO Users (username, password_hash, email) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -66,7 +68,9 @@ public class MySqlDataAccess implements DataAccess {
 
     @Override
     public void createAuth(AuthData a) throws DataAccessException {
-        if (a == null || a.authToken() == null) throw new DataAccessException("Invalid auth");
+        if (a == null || a.authToken() == null) {
+            throw new DataAccessException("Invalid auth");
+        }
         String sql = "INSERT INTO Auths (auth_token, username) VALUES (?, ?)";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -104,7 +108,9 @@ public class MySqlDataAccess implements DataAccess {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, token);
             int rows = stmt.executeUpdate();
-            if (rows == 0) throw new DataAccessException("Auth not found");
+            if (rows == 0) {
+                throw new DataAccessException("Auth not found");
+            }
         } catch (SQLException e) {
             throw new DataAccessException("Failed to delete auth", e);
         }
@@ -126,7 +132,9 @@ public class MySqlDataAccess implements DataAccess {
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
-        if (gameName == null) throw new DataAccessException("Invalid game name");
+        if (gameName == null) {
+            throw new DataAccessException("Invalid game name");
+        }
         String sql = "INSERT INTO Games (game_name, white_username, black_username, game_state) VALUES (?, ?, ?, ?)";
         int generatedId = -1;
         try (Connection conn = DatabaseManager.getConnection();

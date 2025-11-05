@@ -100,17 +100,31 @@ public class GameHandler {
 
         String message = null;
         try {
-            if (resultObj instanceof CreateGameResult) message = ((CreateGameResult) resultObj).getMessage();
-            else if (resultObj instanceof ListGamesResult) message = ((ListGamesResult) resultObj).getMessage();
-            else if (resultObj instanceof JoinGameResult) message = ((JoinGameResult) resultObj).getMessage();
+            if (resultObj instanceof CreateGameResult) {
+                message = ((CreateGameResult) resultObj).getMessage();
+            }
+            else if (resultObj instanceof ListGamesResult) {
+                message = ((ListGamesResult) resultObj).getMessage();
+            }
+            else if (resultObj instanceof JoinGameResult) {
+                message = ((JoinGameResult) resultObj).getMessage();
+            }
         } catch (Exception ignored) {}
 
         if (message != null) {
             String msgLower = message.toLowerCase();
-            if (msgLower.contains("unauthorized")) ctx.status(401).result(json);
-            else if (msgLower.contains("bad request")) ctx.status(400).result(json);
-            else if (msgLower.contains("taken")) ctx.status(403).result(json);
-            else ctx.status(500).result(json);
+            if (msgLower.contains("unauthorized")) {
+                ctx.status(401).result(json);
+            }
+            else if (msgLower.contains("bad request")) {
+                ctx.status(400).result(json);
+            }
+            else if (msgLower.contains("taken")) {
+                ctx.status(403).result(json);
+            }
+            else {
+                ctx.status(500).result(json);
+            }
         } else {
             ctx.status(200).result(json);
         }
