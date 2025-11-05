@@ -74,6 +74,7 @@ public class MySqlDataAccess implements DataAccess {
             stmt.setString(2, a.username());
             stmt.executeUpdate();
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new DataAccessException("Failed to create auth", e);
         }
     }
@@ -122,7 +123,6 @@ public class MySqlDataAccess implements DataAccess {
             throw new DataAccessException("Failed to validate auth token", e);
         }
     }
-
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
