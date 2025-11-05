@@ -12,31 +12,15 @@ public class DatabaseManager {
     private static Properties dbProperties;
     private static boolean initialized = false;
 
-    // Constructor (still optional, but ensures properties are loaded)
     public DatabaseManager() {
         loadPropertiesFromResources();
     }
 
-    /**
-     * Load properties from a Properties object (e.g., for testing)
-     */
-//    public static Properties loadPropertiesFromResources() throws IOException {
-//        ensurePropertiesLoaded();
-//        return dbProperties;
-//    }
-
-    /**
-     * Load properties from a given Properties object (used by tests)
-     */
     public static void loadProperties(Properties properties) {
         dbProperties = properties;
         initialized = true;
     }
 
-
-    /**
-     * Ensure properties are loaded from resources if not already
-     */
     private static void loadPropertiesFromResources() {
         if (dbProperties == null) {
             try (InputStream input = DatabaseManager.class.getClassLoader().getResourceAsStream("db.properties")) {
@@ -53,9 +37,6 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Get a connection to the database.
-     */
     public static Connection getConnection() throws DataAccessException {
         loadPropertiesFromResources();
 
@@ -69,7 +50,6 @@ public class DatabaseManager {
 
         try {
             Connection connection = DriverManager.getConnection(jdbcUrl, user, password);
-            // Initialize schema if not already done
             SchemaInitializer.initialize(connection);
             return connection;
         } catch (SQLException e) {
@@ -77,9 +57,6 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Utility method to create the database itself if it doesn't exist.
-     */
     public static void createDatabase() throws DataAccessException {
         loadPropertiesFromResources();
 
@@ -99,9 +76,6 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Initialize the database (creates tables)
-     */
     public static void initialize() throws DataAccessException, SQLException {
         try (Connection conn = getConnection()) {
             SchemaInitializer.initialize(conn);

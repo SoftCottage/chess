@@ -31,7 +31,6 @@ public interface DataAccess {
 
     void updateGame(GameData game) throws DataAccessException;
 
-    // Optional utility
     void clearDatabase() throws DataAccessException;
 
 }

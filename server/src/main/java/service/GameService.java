@@ -69,9 +69,9 @@ public class GameService {
             GameData game = dataAccess.getGameByID(request.getGameID());
             if (game == null) return new JoinGameResult("Error: bad request");
 
-            String color = request.getPlayerColor(); // original string
+            String color = request.getPlayerColor();
 
-            // --- New: handle "WHITE/BLACK" ---
+            // WHITE/BLACK
             if ("WHITE/BLACK".equalsIgnoreCase(color)) {
                 if (game.whiteUsername() == null) {
                     color = "WHITE";

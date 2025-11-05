@@ -6,9 +6,6 @@ import java.sql.Statement;
 
 public class SchemaInitializer {
 
-    /**
-     * Initialize the database schema. Creates tables if they do not exist.
-     */
     public static void initialize(Connection connection) throws DataAccessException {
         try (Statement stmt = connection.createStatement()) {
 
@@ -22,7 +19,7 @@ public class SchemaInitializer {
                     """;
             stmt.execute(createUsers);
 
-            // Auth table
+            // Auths table
             String createAuth = """
                     CREATE TABLE IF NOT EXISTS Auths (
                         auth_token CHAR(36) PRIMARY KEY,

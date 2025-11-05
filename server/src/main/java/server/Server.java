@@ -17,15 +17,13 @@ public class Server {
     private final DataAccess dataAccess;
 
     public Server() {
-        // Initialize database and create tables if needed
         try {
-            DatabaseManager.createDatabase();  // create database if not exists
-            DatabaseManager.initialize();      // create tables if not exists
+            DatabaseManager.createDatabase();
+            DatabaseManager.initialize();
         } catch (DataAccessException | SQLException e) {
             throw new RuntimeException("Failed to initialize database: " + e.getMessage(), e);
         }
 
-        // Use MySQL persistence instead of in-memory
         dataAccess = new MySqlDataAccess();
 
         javalin = Javalin.create(config -> config.staticFiles.add("web"));

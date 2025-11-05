@@ -22,9 +22,6 @@ public class UserService {
         this.dataAccess = dataAccess;
     }
 
-    /**
-     * Registers a new user with bcrypt password hashing.
-     */
     public RegisterResult register(RegisterRequest request) {
         try {
             if (request.getUsername() == null || request.getPassword() == null || request.getEmail() == null) {
@@ -35,10 +32,8 @@ public class UserService {
                 dataAccess.getUser(request.getUsername());
                 return new RegisterResult("Error: already taken");
             } catch (DataAccessException ignored) {
-                // User does not exist — continue
             }
 
-            // Hash password before storing
             String hashedPassword = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
 
             UserData newUser = new UserData(request.getUsername(), hashedPassword, request.getEmail());
@@ -54,10 +49,6 @@ public class UserService {
             return new RegisterResult("Error: unexpected failure - " + e.getMessage());
         }
     }
-
-    /**
-     * Logs in a user and checks bcrypt password.
-     */
     public LoginResult login(LoginRequest request) {
         try {
             if (request.getUsername() == null || request.getPassword() == null) {
@@ -66,7 +57,6 @@ public class UserService {
 
             UserData user = dataAccess.getUser(request.getUsername());
 
-            // Use bcrypt to check password
             if (!BCrypt.checkpw(request.getPassword(), user.password())) {
                 return new LoginResult("Error: unauthorized");
             }
@@ -85,9 +75,6 @@ public class UserService {
         }
     }
 
-    /**
-     * Logs out a user.
-     */
     public LogoutResult logout(LogoutRequest request) {
         try {
             if (request.getAuthToken() == null) {

@@ -12,11 +12,6 @@ public class ClearService {
         this.dataAccess = dataAccess;
     }
 
-    /**
-     * Clears the entire database.
-     * @return a ClearResult indicating success
-     * @throws DataAccessException if a database error occurs
-     */
     public ClearResult clear() throws DataAccessException {
         dataAccess.clearDatabase();
         return new ClearResult("Clear succeeded");
