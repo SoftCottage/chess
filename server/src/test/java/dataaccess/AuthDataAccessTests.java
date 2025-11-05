@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.UUID;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthInMemoryDataAccessTests {
+public class AuthDataAccessTests {
 
     private static MySqlDataAccess dao;
 
@@ -18,10 +18,8 @@ public class AuthInMemoryDataAccessTests {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // Drop the table if it exists to ensure correct schema
             stmt.executeUpdate("DROP TABLE IF EXISTS auths");
 
-            // Recreate the table with correct columns
             stmt.executeUpdate("""
                 CREATE TABLE auths (
                     auth_token VARCHAR(100) PRIMARY KEY,

@@ -28,7 +28,6 @@ public class GameServiceTest {
     }
 
     // Create Game Tests
-
     @Test
     @Order(1)
     @DisplayName("Create game success")
@@ -108,7 +107,6 @@ public class GameServiceTest {
     }
 
     // List Games Tests
-
     @Test
     @Order(6)
     @DisplayName("List games success")
@@ -248,5 +246,4 @@ public class GameServiceTest {
         assertNotNull(joinRes2.getMessage());
         assertTrue(joinRes2.getMessage().toLowerCase().contains("already taken"));
     }
-
 }

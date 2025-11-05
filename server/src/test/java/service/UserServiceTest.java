@@ -26,7 +26,6 @@ public class UserServiceTest {
     }
 
     // Register Tests
-
     @Test
     @Order(1)
     @DisplayName("Register success")
@@ -68,7 +67,6 @@ public class UserServiceTest {
     }
 
     // Login Tests
-
     @Test
     @Order(4)
     @DisplayName("Login success")
@@ -126,7 +124,6 @@ public class UserServiceTest {
     }
 
     // Logout Tests
-
     @Test
     @Order(8)
     @DisplayName("Logout success")

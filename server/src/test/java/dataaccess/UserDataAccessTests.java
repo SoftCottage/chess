@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 import java.sql.*;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserInMemoryDataAccessTests {
+public class UserDataAccessTests {
 
     private static MySqlDataAccess dao;
 
