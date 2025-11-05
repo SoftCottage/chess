@@ -18,10 +18,10 @@ public class AuthDataAccessTests {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            stmt.executeUpdate("DROP TABLE IF EXISTS auths");
+            stmt.executeUpdate("DROP TABLE IF EXISTS Auths");
 
             stmt.executeUpdate("""
-                CREATE TABLE auths (
+                CREATE TABLE Auths (
                     auth_token VARCHAR(100) PRIMARY KEY,
                     username VARCHAR(50) NOT NULL
                 );
@@ -36,7 +36,7 @@ public class AuthDataAccessTests {
     public void clearAuths() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("DELETE FROM auths");
+            stmt.executeUpdate("DELETE FROM Auths");
         } catch (SQLException e) {
             throw new DataAccessException("Failed to clear auths table", e);
         }

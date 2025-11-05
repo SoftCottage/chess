@@ -18,10 +18,10 @@ public class GameDataAccessTests {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
 
-            stmt.executeUpdate("DROP TABLE IF EXISTS games");
+            stmt.executeUpdate("DROP TABLE IF EXISTS Games");
 
             stmt.executeUpdate("""
-            CREATE TABLE games (
+            CREATE TABLE Games (
                 game_id INT AUTO_INCREMENT PRIMARY KEY,
                 white_username VARCHAR(50),
                 black_username VARCHAR(50),
@@ -39,7 +39,7 @@ public class GameDataAccessTests {
     public void clearGames() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("DELETE FROM games");
+            stmt.executeUpdate("DELETE FROM Games");
         } catch (SQLException e) {
             throw new DataAccessException("Failed to clear games table", e);
         }

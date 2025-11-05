@@ -17,7 +17,7 @@ public class UserDataAccessTests {
              Statement stmt = conn.createStatement()) {
 
             stmt.executeUpdate("""
-                CREATE TABLE IF NOT EXISTS users (
+                CREATE TABLE IF NOT EXISTS Users (
                     username VARCHAR(50) PRIMARY KEY,
                     password_hash VARCHAR(60) NOT NULL,
                     email VARCHAR(100) NOT NULL
@@ -32,7 +32,7 @@ public class UserDataAccessTests {
     public void clearUsers() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("DELETE FROM users");
+            stmt.executeUpdate("DELETE FROM Users");
         } catch (SQLException e) {
             throw new DataAccessException("Failed to clear users table", e);
         }
