@@ -110,7 +110,7 @@ public class MySqlDataAccess implements DataAccess {
     }
 
     @Override
-    public boolean isValidAuthToken(String token) {
+    public boolean isValidAuthToken(String token) throws DataAccessException {
         String sql = "SELECT 1 FROM Auths WHERE auth_token = ?";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -118,10 +118,11 @@ public class MySqlDataAccess implements DataAccess {
             try (ResultSet rs = stmt.executeQuery()) {
                 return rs.next();
             }
-        } catch (SQLException | DataAccessException e) {
-            return false;
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to validate auth token", e);
         }
     }
+
 
     @Override
     public int createGame(String gameName) throws DataAccessException {
@@ -142,7 +143,6 @@ public class MySqlDataAccess implements DataAccess {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new DataAccessException("Failed to create game", e);
         }
         return generatedId;

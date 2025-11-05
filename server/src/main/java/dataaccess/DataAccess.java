@@ -20,7 +20,7 @@ public interface DataAccess {
 
     void deleteAuth(String token) throws DataAccessException;
 
-    boolean isValidAuthToken(String token);
+    boolean isValidAuthToken(String token) throws DataAccessException;
 
     // Game methods
     int createGame(String gameName) throws DataAccessException;

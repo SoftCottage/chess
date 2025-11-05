@@ -20,44 +20,45 @@ public class GameHandler {
         try {
             String authToken = ctx.header("Authorization");
             CreateGameRequest request = gson.fromJson(ctx.body(), CreateGameRequest.class);
+
             if (request == null) {
                 ctx.status(400).result(gson.toJson(new CreateGameResult("Error: bad request")));
                 return;
             }
 
             request = new CreateGameRequest(request.getGameName(), authToken);
-            CreateGameResult result = gameService.createGame(request);
-            String json = gson.toJson(result);
-            ctx.contentType("application/json");
 
-            if (result.getMessage() != null) {
-                if (result.getMessage().toLowerCase().contains("unauthorized")) ctx.status(401).result(json);
-                else if (result.getMessage().toLowerCase().contains("bad request")) ctx.status(400).result(json);
-                else ctx.status(500).result(json);
-            } else {
-                ctx.status(200).result(json);
+            CreateGameResult result;
+            try {
+                result = gameService.createGame(request);
+            } catch (Exception e) {
+                // Treat any DB-related exception as 500
+                ctx.status(500).result(gson.toJson(new CreateGameResult("Error: " + e.getMessage())));
+                return;
             }
+
+            respondWithProperStatus(ctx, result);
 
         } catch (Exception e) {
             ctx.status(500).result(gson.toJson(new CreateGameResult("Error: " + e.getMessage())));
         }
     }
 
-    // List Game
+    // List Games
     public void listGames(Context ctx) {
         try {
             String authToken = ctx.header("Authorization");
             ListGamesRequest request = new ListGamesRequest(authToken);
-            ListGamesResult result = gameService.listGames(request);
-            String json = gson.toJson(result);
-            ctx.contentType("application/json");
 
-            if (result.getMessage() != null) {
-                if (result.getMessage().toLowerCase().contains("unauthorized")) ctx.status(401).result(json);
-                else ctx.status(500).result(json);
-            } else {
-                ctx.status(200).result(json);
+            ListGamesResult result;
+            try {
+                result = gameService.listGames(request);
+            } catch (Exception e) {
+                ctx.status(500).result(gson.toJson(new ListGamesResult("Error: " + e.getMessage())));
+                return;
             }
+
+            respondWithProperStatus(ctx, result);
 
         } catch (Exception e) {
             ctx.status(500).result(gson.toJson(new ListGamesResult("Error: " + e.getMessage())));
@@ -69,28 +70,49 @@ public class GameHandler {
         try {
             String authToken = ctx.header("Authorization");
             JoinGameRequest request = gson.fromJson(ctx.body(), JoinGameRequest.class);
+
             if (request == null) {
                 ctx.status(400).result(gson.toJson(new JoinGameResult("Error: bad request")));
                 return;
             }
 
             request.setAuthToken(authToken);
-            JoinGameResult result = gameService.joinGame(request);
-            String json = gson.toJson(result);
-            ctx.contentType("application/json");
 
-            if (result.getMessage() != null) {
-                String msg = result.getMessage().toLowerCase();
-                if (msg.contains("unauthorized")) ctx.status(401).result(json);
-                else if (msg.contains("bad request")) ctx.status(400).result(json);
-                else if (msg.contains("taken")) ctx.status(403).result(json);
-                else ctx.status(500).result(json);
-            } else {
-                ctx.status(200).result(json);
+            JoinGameResult result;
+            try {
+                result = gameService.joinGame(request);
+            } catch (Exception e) {
+                ctx.status(500).result(gson.toJson(new JoinGameResult("Error: " + e.getMessage())));
+                return;
             }
+
+            respondWithProperStatus(ctx, result);
 
         } catch (Exception e) {
             ctx.status(500).result(gson.toJson(new JoinGameResult("Error: " + e.getMessage())));
+        }
+    }
+
+    // Helper to centralize status handling
+    private void respondWithProperStatus(Context ctx, Object resultObj) {
+        String json = gson.toJson(resultObj);
+        ctx.contentType("application/json");
+
+        String message = null;
+        try {
+            if (resultObj instanceof CreateGameResult) message = ((CreateGameResult) resultObj).getMessage();
+            else if (resultObj instanceof ListGamesResult) message = ((ListGamesResult) resultObj).getMessage();
+            else if (resultObj instanceof JoinGameResult) message = ((JoinGameResult) resultObj).getMessage();
+        } catch (Exception ignored) {}
+
+        if (message != null) {
+            String msgLower = message.toLowerCase();
+            if (msgLower.contains("unauthorized")) ctx.status(401).result(json);
+            else if (msgLower.contains("bad request")) ctx.status(400).result(json);
+            else if (msgLower.contains("taken")) ctx.status(403).result(json);
+            else ctx.status(500).result(json);
+        } else {
+            ctx.status(200).result(json);
         }
     }
 }

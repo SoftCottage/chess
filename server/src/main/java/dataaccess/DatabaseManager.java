@@ -14,21 +14,30 @@ public class DatabaseManager {
 
     // Constructor (still optional, but ensures properties are loaded)
     public DatabaseManager() {
-        ensurePropertiesLoaded();
+        loadPropertiesFromResources();
     }
 
     /**
      * Load properties from a Properties object (e.g., for testing)
      */
-    public void loadProperties(Properties properties) {
+//    public static Properties loadPropertiesFromResources() throws IOException {
+//        ensurePropertiesLoaded();
+//        return dbProperties;
+//    }
+
+    /**
+     * Load properties from a given Properties object (used by tests)
+     */
+    public static void loadProperties(Properties properties) {
         dbProperties = properties;
         initialized = true;
     }
 
+
     /**
      * Ensure properties are loaded from resources if not already
      */
-    private static void ensurePropertiesLoaded() {
+    private static void loadPropertiesFromResources() {
         if (dbProperties == null) {
             try (InputStream input = DatabaseManager.class.getClassLoader().getResourceAsStream("db.properties")) {
                 if (input == null) {
@@ -48,7 +57,7 @@ public class DatabaseManager {
      * Get a connection to the database.
      */
     public static Connection getConnection() throws DataAccessException {
-        ensurePropertiesLoaded();
+        loadPropertiesFromResources();
 
         String host = dbProperties.getProperty("db.host");
         String port = dbProperties.getProperty("db.port");
@@ -72,7 +81,7 @@ public class DatabaseManager {
      * Utility method to create the database itself if it doesn't exist.
      */
     public static void createDatabase() throws DataAccessException {
-        ensurePropertiesLoaded();
+        loadPropertiesFromResources();
 
         String host = dbProperties.getProperty("db.host");
         String port = dbProperties.getProperty("db.port");
