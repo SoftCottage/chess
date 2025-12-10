@@ -2,7 +2,8 @@ package service;
 
 import dataaccess.InMemoryDataAccess;
 import dataaccess.DataAccessException;
-import model.*;
+
+import model.GameData;
 import org.junit.jupiter.api.*;
 import requestresult.*;
 
