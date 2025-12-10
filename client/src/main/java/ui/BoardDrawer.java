@@ -35,7 +35,7 @@ public class BoardDrawer {
     // WHITE PERSPECTIVE (standard orientation)
     // =========================================================================
     private static void drawWhitePerspective() {
-        System.out.println("\n    a   b   c   d   e   f   g   h");
+        System.out.println("\n   a  b  c  d  e  f  g  h");
 
         for (int row = 7; row >= 0; row--) {
             System.out.printf("%d ", row + 1);
@@ -47,7 +47,7 @@ public class BoardDrawer {
             System.out.printf(" %d%n", row + 1);
         }
 
-        System.out.println("    a   b   c   d   e   f   g   h");
+        System.out.println("   a  b  c  d  e  f  g  h");
         System.out.println();
     }
 
