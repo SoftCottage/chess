@@ -64,9 +64,6 @@ public class BoardDrawer {
         System.out.println();
     }
 
-    // =========================================================================
-    // Draw individual square
-    // =========================================================================
     private static void drawSquare(int row, int col) {
         boolean lightSquare = (row + col) % 2 == 0;
 
