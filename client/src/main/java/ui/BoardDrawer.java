@@ -9,7 +9,7 @@ public class BoardDrawer {
     private static final String RESET    = "\u001B[0m";
 
     private static final String WHITE_FG = "\u001B[97m";  // bright white
-    private static final String BLACK_FG = "\u001B[94m";  // bright blue
+    private static final String BLACK_FG = "\u001B[30m";  // bright white
 
     // Unicode chess pieces
     private static final String[][] START = {
