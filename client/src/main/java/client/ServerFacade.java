@@ -8,6 +8,7 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
+    //mjalkdj
     // TODO: register
     // TODO: login
     // TODO: logout
