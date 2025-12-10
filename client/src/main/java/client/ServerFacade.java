@@ -33,8 +33,6 @@ public class ServerFacade {
     }
 
     private <T> T parseResponse(HttpResponse<String> response, Class<T> type) throws Exception {
-        System.out.println("DEBUG RESPONSE: " + response.body());
-
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
             return gson.fromJson(response.body(), type);
         }

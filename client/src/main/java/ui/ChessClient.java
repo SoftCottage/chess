@@ -31,6 +31,9 @@ public class ChessClient {
     // ============================================================
 
     private void preloginLoop() {
+
+        printPreloginHelp();
+
         while (true) {
             System.out.print("\n[Prelogin] Enter command (help for options): ");
             String input = scanner.nextLine().trim();
@@ -114,6 +117,9 @@ public class ChessClient {
     // ============================================================
 
     private void postloginLoop() {
+
+        printPostloginHelp();
+
         while (authToken != null) {
             System.out.print("\n[Postlogin] Enter command (help for options): ");
             String input = scanner.nextLine().trim();
@@ -224,28 +230,43 @@ public class ChessClient {
 
             GameData game = lastListedGames.get(num - 1);
 
-            System.out.print("Choose color (WHITE/BLACK): ");
-            String colorStr = scanner.nextLine().trim().toUpperCase();
+            ChessGame.TeamColor joinColor = null;
 
-            ChessGame.TeamColor color;
-            if (colorStr.equals("WHITE")) color = ChessGame.TeamColor.WHITE;
-            else if (colorStr.equals("BLACK")) color = ChessGame.TeamColor.BLACK;
+            // Detect if user already joined the game
+            if (username.equals(game.whiteUsername())) {
+                joinColor = ChessGame.TeamColor.WHITE;
+                System.out.println("Rejoining game as WHITE...");
+            }
+            else if (username.equals(game.blackUsername())) {
+                joinColor = ChessGame.TeamColor.BLACK;
+                System.out.println("Rejoining game as BLACK...");
+            }
             else {
-                System.out.println("Invalid color.");
-                return;
+                // User not in game yet — ask for color
+                System.out.print("Choose color (WHITE/BLACK): ");
+                String colorStr = scanner.nextLine().trim().toUpperCase();
+
+                if (colorStr.equals("WHITE")) joinColor = ChessGame.TeamColor.WHITE;
+                else if (colorStr.equals("BLACK")) joinColor = ChessGame.TeamColor.BLACK;
+                else {
+                    System.out.println("Invalid color.");
+                    return;
+                }
             }
 
-            facade.joinGame(game.gameID(), color, authToken);
+            // Join using detected color
+            facade.joinGame(game.gameID(), joinColor, authToken);
 
-            System.out.println("Joined game '" + game.gameName() + "' as " + color);
+            System.out.println("Joined game '" + game.gameName() + "' as " + joinColor);
 
-            // Phase 6: draw board
-            drawInitialBoard(color);
+            // Show initial board
+            drawInitialBoard(joinColor);
 
         } catch (Exception ex) {
             System.out.println("Failed to join game: " + ex.getMessage());
         }
     }
+
 
     private void handleObserveGame() {
         if (lastListedGames.isEmpty()) {
