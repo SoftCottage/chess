@@ -1,6 +1,5 @@
 package client;
 
-import dao.*;
 import model.*;
 import com.google.gson.Gson;
 import model.GameData;
