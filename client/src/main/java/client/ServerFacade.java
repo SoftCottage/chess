@@ -21,10 +21,6 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    // ========================
-    // Helpers
-    // ========================
-
     private HttpRequest.Builder auth(HttpRequest.Builder builder, String authToken) {
         if (authToken != null) {
             builder.header("Authorization", authToken);
@@ -41,10 +37,6 @@ public class ServerFacade {
         throw new Exception((String) error.get("message"));
     }
 
-    // ========================
-    // Clear DB (for tests only)
-    // DELETE /db
-    // ========================
     public ClearResponse clear() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + "/db"))
@@ -57,9 +49,6 @@ public class ServerFacade {
         return parseResponse(response, ClearResponse.class);
     }
 
-    // ========================
-    // Register: POST /user
-    // ========================
     public RegisterResponse register(String username, String password, String email) throws Exception {
 
         RegisterRequest req = new RegisterRequest(username, password, email);
@@ -77,9 +66,6 @@ public class ServerFacade {
         return parseResponse(response, RegisterResponse.class);
     }
 
-    // ========================
-    // Login: POST /session
-    // ========================
     public LoginResponse login(String username, String password) throws Exception {
 
         LoginRequest req = new LoginRequest(username, password);
@@ -97,9 +83,6 @@ public class ServerFacade {
         return parseResponse(response, LoginResponse.class);
     }
 
-    // ========================
-    // Logout: DELETE /session
-    // ========================
     public LogoutResponse logout(String authToken) throws Exception {
 
         HttpRequest.Builder b = HttpRequest.newBuilder()
@@ -115,9 +98,6 @@ public class ServerFacade {
         return parseResponse(response, LogoutResponse.class);
     }
 
-    // ========================
-    // Create Game: POST /game
-    // ========================
     public CreateGameResponse createGame(String gameName, String authToken) throws Exception {
 
         CreateGameRequest req = new CreateGameRequest(gameName);
@@ -136,9 +116,6 @@ public class ServerFacade {
         return parseResponse(response, CreateGameResponse.class);
     }
 
-    // ========================
-    // List Games: GET /game
-    // ========================
     public GameData[] listGames(String authToken) throws Exception {
 
         HttpRequest.Builder b = HttpRequest.newBuilder()
@@ -154,25 +131,35 @@ public class ServerFacade {
         return list.games();
     }
 
-    // ========================
-    // Join Game: PUT /game
-    // ========================
     public JoinGameResponse joinGame(int gameID, ChessGame.TeamColor color, String authToken) throws Exception {
 
-        String colorString = (color == null ? null : color.toString());
+        String colorString = (color == null ? "OBSERVER" : color.toString());
+
         JoinGameRequest req = new JoinGameRequest(gameID, colorString);
         String json = gson.toJson(req);
 
-        HttpRequest.Builder b = HttpRequest.newBuilder()
+        System.out.println("  JSON SENT = " + json);
+
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + "/game"))
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .header("Content-Type", "application/json");
 
-        auth(b, authToken);
+        if (authToken != null) {
+            builder.header("Authorization", authToken);
+        }
 
-        HttpResponse<String> response =
-                client.send(b.build(), HttpResponse.BodyHandlers.ofString());
+        HttpRequest request = builder.build();
+
+        System.out.println("  HEADERS SENT:");
+        request.headers().map().forEach((k, v) -> {
+            System.out.println("    " + k + " = " + v);
+        });
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         return parseResponse(response, JoinGameResponse.class);
     }
+
+
 }

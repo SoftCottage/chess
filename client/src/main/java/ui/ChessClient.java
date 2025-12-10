@@ -11,11 +11,9 @@ public class ChessClient {
     private final ServerFacade facade;
     private final Scanner scanner = new Scanner(System.in);
 
-    // auth and session state
     private String authToken = null;
     private String username = null;
 
-    // for list-games numbering
     private List<GameData> lastListedGames = new ArrayList<>();
 
     public ChessClient(ServerFacade facade) {
@@ -25,10 +23,6 @@ public class ChessClient {
     public void run() {
         preloginLoop();
     }
-
-    // ============================================================
-    // PRELOGIN UI
-    // ============================================================
 
     private void preloginLoop() {
 
@@ -111,10 +105,6 @@ public class ChessClient {
             System.out.println("Login failed: " + ex.getMessage());
         }
     }
-
-    // ============================================================
-    // POSTLOGIN UI
-    // ============================================================
 
     private void postloginLoop() {
 
@@ -232,7 +222,6 @@ public class ChessClient {
 
             ChessGame.TeamColor joinColor = null;
 
-            // Detect if user already joined the game
             if (username.equals(game.whiteUsername())) {
                 joinColor = ChessGame.TeamColor.WHITE;
                 System.out.println("Rejoining game as WHITE...");
@@ -242,7 +231,6 @@ public class ChessClient {
                 System.out.println("Rejoining game as BLACK...");
             }
             else {
-                // User not in game yet — ask for color
                 System.out.print("Choose color (WHITE/BLACK): ");
                 String colorStr = scanner.nextLine().trim().toUpperCase();
 
@@ -254,19 +242,16 @@ public class ChessClient {
                 }
             }
 
-            // Join using detected color
             facade.joinGame(game.gameID(), joinColor, authToken);
 
             System.out.println("Joined game '" + game.gameName() + "' as " + joinColor);
 
-            // Show initial board
             drawInitialBoard(joinColor);
 
         } catch (Exception ex) {
             System.out.println("Failed to join game: " + ex.getMessage());
         }
     }
-
 
     private void handleObserveGame() {
         if (lastListedGames.isEmpty()) {
@@ -296,10 +281,6 @@ public class ChessClient {
             System.out.println("Failed to observe game: " + ex.getMessage());
         }
     }
-
-    // ============================================================
-    // INITIAL BOARD DRAWING (PHASE 5 requirement)
-    // ============================================================
 
     private void drawInitialBoard(ChessGame.TeamColor perspective) {
         System.out.println("\n=== INITIAL BOARD (" + perspective + " perspective) ===");

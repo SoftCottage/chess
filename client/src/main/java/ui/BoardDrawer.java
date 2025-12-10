@@ -11,7 +11,6 @@ public class BoardDrawer {
     private static final String WHITE_FG = "\u001B[97m";  // bright white
     private static final String BLACK_FG = "\u001B[30m";  // bright white
 
-    // Unicode chess pieces
     private static final String[][] START = {
             {"♜","♞","♝","♛","♚","♝","♞","♜"},
             {"♟","♟","♟","♟","♟","♟","♟","♟"},
@@ -31,9 +30,6 @@ public class BoardDrawer {
         }
     }
 
-    // =========================================================================
-    // WHITE PERSPECTIVE (standard orientation)
-    // =========================================================================
     private static void drawWhitePerspective() {
         System.out.println("\n   a  b  c  d  e  f  g  h");
 
@@ -51,9 +47,6 @@ public class BoardDrawer {
         System.out.println();
     }
 
-    // =========================================================================
-    // BLACK PERSPECTIVE (rotation)
-    // =========================================================================
     private static void drawBlackPerspective() {
         System.out.println("\n    h   g   f   e   d   c   b   a");
 

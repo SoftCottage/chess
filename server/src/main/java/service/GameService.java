@@ -77,7 +77,7 @@ public class GameService {
 
             String color = request.getPlayerColor();
 
-            // WHITE/BLACK
+            // WHITE/BLACK AUTO
             if ("WHITE/BLACK".equalsIgnoreCase(color)) {
                 if (game.whiteUsername() == null) {
                     color = "WHITE";
@@ -88,14 +88,13 @@ public class GameService {
                 }
             }
 
-            // Assign color
             if (color.equalsIgnoreCase("WHITE")) {
-                if (game.whiteUsername() != null) {
+                if (game.whiteUsername() != null && !game.whiteUsername().equals(auth.username())) {
                     return new JoinGameResult("Error: already taken");
                 }
                 game = game.withWhiteUsername(auth.username());
             } else if (color.equalsIgnoreCase("BLACK")) {
-                if (game.blackUsername() != null) {
+                if (game.blackUsername() != null && !game.blackUsername().equals(auth.username())) {
                     return new JoinGameResult("Error: already taken");
                 }
                 game = game.withBlackUsername(auth.username());
