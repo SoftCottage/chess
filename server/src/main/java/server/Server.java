@@ -19,8 +19,8 @@ public class Server {
     public Server() {
         try {
             DatabaseManager.createDatabase();
-            DatabaseManager.initialize();
-        } catch (DataAccessException | SQLException e) {
+     //       DatabaseManager.initialize();
+        } catch (DataAccessException e) {
             throw new RuntimeException("Failed to initialize database: " + e.getMessage(), e);
         }
 

@@ -1,83 +1,77 @@
 package dataaccess;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Properties;
 
 public class DatabaseManager {
+    private static String databaseName;
+    private static String dbUsername;
+    private static String dbPassword;
+    private static String connectionUrl;
 
-    private static Properties dbProperties;
-    private static boolean initialized = false;
-
-    public DatabaseManager() {
+    /*
+     * Load the database information for the db.properties file.
+     */
+    static {
         loadPropertiesFromResources();
     }
 
-    public static void loadProperties(Properties properties) {
-        dbProperties = properties;
-        initialized = true;
+    /**
+     * Creates the database if it does not already exist.
+     */
+    static public void createDatabase() throws DataAccessException {
+        var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
+        try (var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
+             var preparedStatement = conn.prepareStatement(statement)) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataAccessException("failed to create database", ex);
+        }
+    }
+
+    /**
+     * Create a connection to the database and sets the catalog based upon the
+     * properties specified in db.properties. Connections to the database should
+     * be short-lived, and you must close the connection when you are done with it.
+     * The easiest way to do that is with a try-with-resource block.
+     * <br/>
+     * <code>
+     * try (var conn = DatabaseManager.getConnection()) {
+     * // execute SQL statements.
+     * }
+     * </code>
+     */
+    static Connection getConnection() throws DataAccessException {
+        try {
+            //do not wrap the following line with a try-with-resources
+            var conn = DriverManager.getConnection(connectionUrl, dbUsername, dbPassword);
+            conn.setCatalog(databaseName);
+            return conn;
+        } catch (SQLException ex) {
+            throw new DataAccessException("failed to get connection", ex);
+        }
     }
 
     private static void loadPropertiesFromResources() {
-        if (dbProperties == null) {
-            try (InputStream input = DatabaseManager.class.getClassLoader().getResourceAsStream("db.properties")) {
-                if (input == null) {
-                    throw new RuntimeException("db.properties not found in resources");
-                }
-                Properties props = new Properties();
-                props.load(input);
-                loadProperties(props);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to load db.properties: " + e.getMessage(), e);
+        try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
+            if (propStream == null) {
+                throw new Exception("Unable to load db.properties");
             }
+            Properties props = new Properties();
+            props.load(propStream);
+            loadProperties(props);
+        } catch (Exception ex) {
+            throw new RuntimeException("unable to process db.properties", ex);
         }
     }
 
-    public static Connection getConnection() throws DataAccessException {
-        loadPropertiesFromResources();
+    private static void loadProperties(Properties props) {
+        databaseName = props.getProperty("db.name");
+        dbUsername = props.getProperty("db.user");
+        dbPassword = props.getProperty("db.password");
 
-        String host = dbProperties.getProperty("db.host");
-        String port = dbProperties.getProperty("db.port");
-        String name = dbProperties.getProperty("db.name");
-        String user = dbProperties.getProperty("db.user");
-        String password = dbProperties.getProperty("db.password", ""); // default to empty
-
-        String jdbcUrl = String.format("jdbc:mysql://%s:%s/%s?serverTimezone=UTC", host, port, name);
-
-        try {
-            Connection connection = DriverManager.getConnection(jdbcUrl, user, password);
-            SchemaInitializer.initialize(connection);
-            return connection;
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to connect to database: " + e.getMessage(), e);
-        }
-    }
-
-    public static void createDatabase() throws DataAccessException {
-        loadPropertiesFromResources();
-
-        String host = dbProperties.getProperty("db.host");
-        String port = dbProperties.getProperty("db.port");
-        String name = dbProperties.getProperty("db.name");
-        String user = dbProperties.getProperty("db.user");
-        String password = dbProperties.getProperty("db.password", "");
-
-        String jdbcUrl = String.format("jdbc:mysql://%s:%s/?serverTimezone=UTC", host, port);
-
-        try (Connection conn = DriverManager.getConnection(jdbcUrl, user, password);
-             var stmt = conn.createStatement()) {
-            stmt.executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
-        } catch (SQLException e) {
-            throw new DataAccessException("Failed to create database: " + e.getMessage(), e);
-        }
-    }
-
-    public static void initialize() throws DataAccessException, SQLException {
-        try (Connection conn = getConnection()) {
-            SchemaInitializer.initialize(conn);
-        }
+        var host = props.getProperty("db.host");
+        var port = Integer.parseInt(props.getProperty("db.port"));
+        connectionUrl = String.format("jdbc:mysql://%s:%d", host, port);
     }
 }
