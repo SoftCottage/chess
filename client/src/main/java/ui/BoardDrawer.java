@@ -4,12 +4,12 @@ import chess.ChessGame;
 
 public class BoardDrawer {
 
-    private static final String LIGHT_BG = "\u001B[47m";  // white background
-    private static final String DARK_BG  = "\u001B[43m";  // yellow/brown background
+    private static final String LIGHT_BG = "\u001B[47m";
+    private static final String DARK_BG  = "\u001B[43m";
     private static final String RESET    = "\u001B[0m";
 
-    private static final String WHITE_FG = "\u001B[97m";  // bright white
-    private static final String BLACK_FG = "\u001B[30m";  // bright white
+    private static final String WHITE_FG = "\u001B[97m";
+    private static final String BLACK_FG = "\u001B[30m";
 
     private static final String[][] START = {
             {"♜","♞","♝","♛","♚","♝","♞","♜"},
