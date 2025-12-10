@@ -234,8 +234,12 @@ public class ChessClient {
                 System.out.print("Choose color (WHITE/BLACK): ");
                 String colorStr = scanner.nextLine().trim().toUpperCase();
 
-                if (colorStr.equals("WHITE")) joinColor = ChessGame.TeamColor.WHITE;
-                else if (colorStr.equals("BLACK")) joinColor = ChessGame.TeamColor.BLACK;
+                if (colorStr.equals("WHITE")) {
+                    joinColor = ChessGame.TeamColor.WHITE;
+                }
+                else if (colorStr.equals("BLACK")) {
+                    joinColor = ChessGame.TeamColor.BLACK;
+                }
                 else {
                     System.out.println("Invalid color.");
                     return;
