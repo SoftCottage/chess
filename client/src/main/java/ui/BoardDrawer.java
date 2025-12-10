@@ -8,8 +8,8 @@ public class BoardDrawer {
     private static final String DARK_BG  = "\u001B[43m";
     private static final String RESET    = "\u001B[0m";
 
-    private static final String WHITE_FG = "\u001B[97m";
-    private static final String BLACK_FG = "\u001B[30m";
+    private static final String WHITE_FG = "\u001B[30m";
+    private static final String BLACK_FG = "\u001B[97m";
 
     private static final String[][] START = {
             {"♜","♞","♝","♛","♚","♝","♞","♜"},
@@ -48,7 +48,7 @@ public class BoardDrawer {
     }
 
     private static void drawBlackPerspective() {
-        System.out.println("\n    h   g   f   e   d   c   b   a");
+        System.out.println("\n    a  b  c  d  e  f  g  h");
 
         for (int row = 0; row < 8; row++) {
             System.out.printf("%d ", row + 1);
@@ -60,7 +60,7 @@ public class BoardDrawer {
             System.out.printf(" %d%n", row + 1);
         }
 
-        System.out.println("    h   g   f   e   d   c   b   a");
+        System.out.println("   a  b  c  d  e  f  g  h");
         System.out.println();
     }
 

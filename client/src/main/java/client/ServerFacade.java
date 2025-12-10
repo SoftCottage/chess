@@ -151,11 +151,6 @@ public class ServerFacade {
 
         HttpRequest request = builder.build();
 
-        System.out.println("  HEADERS SENT:");
-        request.headers().map().forEach((k, v) -> {
-            System.out.println("    " + k + " = " + v);
-        });
-
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         return parseResponse(response, JoinGameResponse.class);
