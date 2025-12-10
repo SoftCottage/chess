@@ -93,7 +93,6 @@ public class GameHandler {
         }
     }
 
-    // Helper to centralize status handling
     private void respondWithProperStatus(Context ctx, Object resultObj) {
         String json = gson.toJson(resultObj);
         ctx.contentType("application/json");

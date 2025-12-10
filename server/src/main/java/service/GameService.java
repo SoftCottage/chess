@@ -38,7 +38,6 @@ public class GameService {
         }
     }
 
-    // List Games
     public ListGamesResult listGames(ListGamesRequest request) {
         try {
             if (request == null || request.getAuthToken() == null || request.getAuthToken().isBlank()) {
@@ -61,8 +60,7 @@ public class GameService {
         try {
             if (request == null
                     || request.getAuthToken() == null || request.getAuthToken().isBlank()
-                    || request.getGameID() == null
-                    || request.getPlayerColor() == null) {
+                    || request.getGameID() == null) {
                 return new JoinGameResult("Error: bad request");
             }
 
@@ -75,10 +73,12 @@ public class GameService {
             if (game == null) {
                 return new JoinGameResult("Error: bad request");
             }
-
             String color = request.getPlayerColor();
 
-            // WHITE/BLACK AUTO
+            if (color == null) {
+                return new JoinGameResult();
+            }
+
             if ("WHITE/BLACK".equalsIgnoreCase(color)) {
                 if (game.whiteUsername() == null) {
                     color = "WHITE";
@@ -114,5 +114,4 @@ public class GameService {
             return new JoinGameResult("Error: unexpected failure - " + e.getMessage());
         }
     }
-
 }

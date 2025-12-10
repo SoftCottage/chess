@@ -133,12 +133,11 @@ public class ServerFacade {
 
     public JoinGameResponse joinGame(int gameID, ChessGame.TeamColor color, String authToken) throws Exception {
 
-        String colorString = (color == null ? "OBSERVER" : color.toString());
+        String colorString = (color == null ? null : color.toString());
 
         JoinGameRequest req = new JoinGameRequest(gameID, colorString);
         String json = gson.toJson(req);
 
-        System.out.println("  JSON SENT = " + json);
 
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(serverUrl + "/game"))
@@ -155,6 +154,4 @@ public class ServerFacade {
 
         return parseResponse(response, JoinGameResponse.class);
     }
-
-
 }

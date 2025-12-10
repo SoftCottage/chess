@@ -274,12 +274,11 @@ public class ChessClient {
 
             GameData game = lastListedGames.get(num - 1);
 
-            // Observer → color = null
             facade.joinGame(game.gameID(), null, authToken);
 
             System.out.println("Now observing game: " + game.gameName());
 
-            drawInitialBoard(ChessGame.TeamColor.WHITE); // observers see white perspective
+            drawInitialBoard(ChessGame.TeamColor.WHITE);
 
         } catch (Exception ex) {
             System.out.println("Failed to observe game: " + ex.getMessage());
