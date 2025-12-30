@@ -129,9 +129,6 @@ public class ChessClient {
             else if (input.equalsIgnoreCase("playgame")) {
                 handlePlayGame();
             }
-            else if (input.equalsIgnoreCase("observeline")) {  // spelled correctly below
-                System.out.println("Did you mean 'observegame'?");
-            }
             else if (input.equalsIgnoreCase("observegame")) {
                 handleObserveGame();
             }
@@ -182,7 +179,7 @@ public class ChessClient {
         try {
             GameData[] games = facade.listGames(authToken);
 
-            lastListedGames = Arrays.asList(games);
+            lastListedGames = new ArrayList<>(Arrays.asList(games));
 
             if (games.length == 0) {
                 System.out.println("No games available.");

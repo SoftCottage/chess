@@ -32,7 +32,6 @@ public class ServerFacade {
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
             return gson.fromJson(response.body(), type);
         }
-        // error
         var error = gson.fromJson(response.body(), java.util.Map.class);
         throw new Exception((String) error.get("message"));
     }
